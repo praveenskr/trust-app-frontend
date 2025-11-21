@@ -1,0 +1,70 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar -->
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="sidebar-header">
+      <h2>Trust App</h2>
+    </div>
+
+    <mat-nav-list>
+      <!-- Home Menu Item -->
+      <a mat-list-item routerLink="/home" routerLinkActive="active">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </a>
+
+      <!-- Master Data Menu Item with Sub-menu -->
+      <mat-list-item (click)="toggleMasterMenu()" class="master-menu-item">
+        <mat-icon>storage</mat-icon>
+        <span>Master Data</span>
+        <mat-icon class="expand-icon">{{ isMasterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </mat-list-item>
+
+      <!-- Master Data Sub-menu Items -->
+      <div *ngIf="isMasterMenuOpen" class="sub-menu">
+        <a 
+          *ngFor="let item of masterMenuItems" 
+          mat-list-item 
+          [routerLink]="item.route" 
+          routerLinkActive="active"
+          class="sub-menu-item">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content Area -->
+  <mat-sidenav-content>
+    <!-- Header Toolbar -->
+    <mat-toolbar color="primary" class="toolbar">
+      <span class="toolbar-title">Trust App</span>
+      <span class="spacer"></span>
+      
+      <!-- User Menu -->
+      <div class="user-info">
+        <span class="user-name">{{ user?.fullName || user?.username || 'User' }}</span>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>email</mat-icon>
+            <span>{{ user?.email }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+
+    <!-- Page Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

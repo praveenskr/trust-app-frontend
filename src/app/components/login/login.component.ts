@@ -82,8 +82,8 @@ export class LoginComponent implements OnInit {
             'Close',
             { duration: 3000 }
           );
-          // Redirect to home/dashboard (you can change this route)
-          this.router.navigate(['/']);
+          // Redirect to home page after successful login
+          this.router.navigate(['/home']);
         }
         this.isSubmitting = false;
       },

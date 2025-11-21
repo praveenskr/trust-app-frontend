@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { RegisterUserDTO, RegisterUserResponseDTO } from '../models/register-user.model';
 import { LoginUserDTO, LoginResponseDTO } from '../models/login-user.model';
 import { PasswordResetRequestDTO, PasswordResetDTO } from '../models/password-reset.model';
+import { LogoutRequestDTO } from '../models/logout.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,31 @@ export class AuthService {
     );
   }
 
-  logout(): void {
+  logout(): Observable<ApiResponse<null>> {
+    const refreshToken = this.getRefreshToken();
+    
+    // If no refresh token, just clear local storage
+    if (!refreshToken) {
+      this.clearLocalStorage();
+      return of({ status: 'success', message: 'Logged out successfully', data: null } as ApiResponse<null>);
+    }
+
+    const logoutRequest: LogoutRequestDTO = {
+      refreshToken: refreshToken
+    };
+
+    return this.http.post<ApiResponse<null>>(
+      `${this.apiUrl}/logout`,
+      logoutRequest
+    ).pipe(
+      tap(() => {
+        // Clear local storage after successful API call
+        this.clearLocalStorage();
+      })
+    );
+  }
+
+  private clearLocalStorage(): void {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
