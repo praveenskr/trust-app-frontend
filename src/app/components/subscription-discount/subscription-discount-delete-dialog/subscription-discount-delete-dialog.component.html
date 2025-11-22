@@ -1,0 +1,23 @@
+<div class="delete-dialog-container">
+  <h2 mat-dialog-title>Delete Subscription Discount</h2>
+  
+  <mat-dialog-content>
+    <p>Are you sure you want to delete the following subscription discount?</p>
+    <div class="discount-details">
+      <p><strong>Plan ID:</strong> {{ data.subscriptionDiscount.planId }}</p>
+      <p><strong>Discount Type:</strong> {{ data.subscriptionDiscount.discountType }}</p>
+      <p><strong>Discount Value:</strong> {{ data.subscriptionDiscount.discountValue }}</p>
+    </div>
+    <p class="warning-text">This action cannot be undone.</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</div>
+

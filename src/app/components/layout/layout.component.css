@@ -29,6 +29,8 @@ mat-list-item {
   height: 48px;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
 }
 
 mat-list-item:hover {
@@ -44,18 +46,38 @@ mat-list-item.active mat-icon {
   color: white;
 }
 
-mat-list-item mat-icon {
+mat-list-item mat-icon,
+a[mat-list-item] mat-icon {
   margin-right: 16px;
   color: #666;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+mat-list-item span,
+a[mat-list-item] span {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1.5;
 }
 
 .master-menu-item {
   font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .expand-icon {
   margin-left: auto !important;
   margin-right: 0 !important;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sub-menu {
@@ -66,12 +88,24 @@ mat-list-item mat-icon {
 .sub-menu-item {
   padding-left: 64px !important;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .sub-menu-item mat-icon {
   font-size: 20px;
   width: 20px;
   height: 20px;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sub-menu-item span {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
 .toolbar {
@@ -109,5 +143,77 @@ mat-list-item mat-icon {
 
 ::ng-deep .mat-mdc-menu-panel {
   min-width: 200px;
+}
+
+/* Fix icon and text alignment in list items */
+::ng-deep mat-list-item,
+::ng-deep a[mat-list-item] {
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep mat-list-item .mdc-list-item__content,
+::ng-deep mat-list-item .mat-mdc-list-item-content,
+::ng-deep a[mat-list-item] .mdc-list-item__content,
+::ng-deep a[mat-list-item] .mat-mdc-list-item-content {
+  display: flex !important;
+  align-items: center !important;
+  flex-direction: row !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+::ng-deep mat-list-item .mdc-list-item__content mat-icon,
+::ng-deep mat-list-item .mat-mdc-list-item-content mat-icon,
+::ng-deep a[mat-list-item] .mdc-list-item__content mat-icon,
+::ng-deep a[mat-list-item] .mat-mdc-list-item-content mat-icon {
+  margin-right: 16px !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+::ng-deep mat-list-item .mdc-list-item__content span,
+::ng-deep mat-list-item .mat-mdc-list-item-content span,
+::ng-deep a[mat-list-item] .mdc-list-item__content span,
+::ng-deep a[mat-list-item] .mat-mdc-list-item-content span {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 1;
+  vertical-align: middle !important;
+  line-height: 1.5 !important;
+}
+
+::ng-deep .master-menu-item .mdc-list-item__content,
+::ng-deep .master-menu-item .mat-mdc-list-item-content {
+  display: flex !important;
+  align-items: center !important;
+  width: 100%;
+}
+
+::ng-deep .sub-menu-item .mdc-list-item__content,
+::ng-deep .sub-menu-item .mat-mdc-list-item-content {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Additional fix for anchor-based list items */
+::ng-deep a[mat-list-item] {
+  text-decoration: none;
+}
+
+::ng-deep a[mat-list-item] mat-icon {
+  margin-right: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep a[mat-list-item] span {
+  display: inline-flex !important;
+  align-items: center !important;
 }
 

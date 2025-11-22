@@ -1,0 +1,111 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Subscription Discount' : 'Add New Subscription Discount' }}</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="subscriptionDiscountForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <!-- Subscription Plan -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Subscription Plan</mat-label>
+          <mat-select formControlName="planId" required>
+            <mat-option *ngFor="let plan of subscriptionPlans" [value]="plan.id">
+              {{ plan.name }} ({{ plan.code }})
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="isLoadingPlans">Loading plans...</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('planId')">
+            {{ getErrorMessage('planId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Discount Type -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Discount Type</mat-label>
+          <mat-select formControlName="discountType" required>
+            <mat-option *ngFor="let discountType of discountTypes" [value]="discountType.value">
+              {{ discountType.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="isFieldInvalid('discountType')">
+            {{ getErrorMessage('discountType') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Discount Value -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Discount Value</mat-label>
+          <input matInput type="number" formControlName="discountValue" placeholder="Enter discount value" required step="0.01" min="0.01">
+          <mat-hint *ngIf="subscriptionDiscountForm.get('discountType')?.value === 'PERCENTAGE'">Enter percentage (e.g., 10 for 10%)</mat-hint>
+          <mat-hint *ngIf="subscriptionDiscountForm.get('discountType')?.value === 'FIXED'">Enter fixed amount</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('discountValue')">
+            {{ getErrorMessage('discountValue') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Min Quantity -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Min Quantity</mat-label>
+          <input matInput type="number" formControlName="minQuantity" placeholder="Enter min quantity (optional)" min="1">
+          <mat-hint>Optional - Minimum quantity required</mat-hint>
+        </mat-form-field>
+
+        <!-- Max Quantity -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Max Quantity</mat-label>
+          <input matInput type="number" formControlName="maxQuantity" placeholder="Enter max quantity (optional)" min="1">
+          <mat-hint>Optional - Maximum quantity allowed</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Valid From -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Valid From</mat-label>
+          <input matInput [matDatepicker]="validFromPicker" formControlName="validFrom" placeholder="Select valid from date" required>
+          <mat-datepicker-toggle matIconSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #validFromPicker></mat-datepicker>
+          <mat-error *ngIf="isFieldInvalid('validFrom')">
+            {{ getErrorMessage('validFrom') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Valid To -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Valid To</mat-label>
+          <input matInput [matDatepicker]="validToPicker" formControlName="validTo" placeholder="Select valid to date (optional)">
+          <mat-datepicker-toggle matIconSuffix [for]="validToPicker"></mat-datepicker-toggle>
+          <mat-datepicker #validToPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Is Active -->
+        <div class="checkbox-field">
+          <mat-checkbox formControlName="isActive" color="primary">
+            Active
+          </mat-checkbox>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || subscriptionDiscountForm.invalid">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+
