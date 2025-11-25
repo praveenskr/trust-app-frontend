@@ -1,0 +1,93 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Subscription Plan' : 'Add New Subscription Plan' }}</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="subscriptionPlanForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <!-- Plan Code -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Plan Code</mat-label>
+          <input matInput formControlName="code" placeholder="Enter plan code" required>
+          <mat-hint>Maximum 50 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('code')">
+            {{ getErrorMessage('code') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Plan Name -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Plan Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter plan name" required>
+          <mat-hint>Maximum 255 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('name')">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Plan Type -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Plan Type</mat-label>
+          <mat-select formControlName="planType" required>
+            <mat-option *ngFor="let planType of planTypes" [value]="planType.value">
+              {{ planType.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="isFieldInvalid('planType')">
+            {{ getErrorMessage('planType') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Duration Months -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Duration (Months)</mat-label>
+          <input matInput type="number" formControlName="durationMonths" placeholder="Enter duration in months" min="1">
+          <mat-hint>Optional - Number of months</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Amount -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Amount</mat-label>
+          <input matInput type="number" formControlName="amount" placeholder="Enter amount" required step="0.01" min="0.01">
+          <mat-error *ngIf="isFieldInvalid('amount')">
+            {{ getErrorMessage('amount') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3" placeholder="Enter description (optional)"></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <!-- Is Active -->
+        <div class="checkbox-field">
+          <mat-checkbox formControlName="isActive" color="primary">
+            Active
+          </mat-checkbox>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || subscriptionPlanForm.invalid">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

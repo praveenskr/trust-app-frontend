@@ -1,0 +1,26 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-card {
+  margin-top: 24px;
+}
+
+mat-card-title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+}
+
+mat-card-subtitle {
+  color: #666;
+  margin-top: 8px;
+}
+
+mat-card-content {
+  padding: 24px;
+  color: #666;
+  font-size: 16px;
+}
+

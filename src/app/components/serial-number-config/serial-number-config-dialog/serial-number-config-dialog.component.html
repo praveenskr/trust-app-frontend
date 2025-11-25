@@ -1,0 +1,84 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Serial Number Configuration' : 'Add New Serial Number Configuration' }}</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="configForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <!-- Entity Type -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Entity Type</mat-label>
+          <input matInput formControlName="entityType" placeholder="Enter entity type" required>
+          <mat-hint>Maximum 100 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('entityType')">
+            {{ getErrorMessage('entityType') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Prefix -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Prefix</mat-label>
+          <input matInput formControlName="prefix" placeholder="Enter prefix" required>
+          <mat-hint>Maximum 50 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('prefix')">
+            {{ getErrorMessage('prefix') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Format Pattern -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Format Pattern</mat-label>
+        <input matInput formControlName="formatPattern" placeholder="Enter format pattern (optional)">
+        <mat-hint>Maximum 255 characters. Optional - used for custom formatting</mat-hint>
+      </mat-form-field>
+
+      <div class="form-row">
+        <!-- Current Year -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Current Year</mat-label>
+          <input matInput type="number" formControlName="currentYear" placeholder="Enter current year" required min="2000" max="9999">
+          <mat-error *ngIf="isFieldInvalid('currentYear')">
+            {{ getErrorMessage('currentYear') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Last Sequence -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Last Sequence</mat-label>
+          <input matInput type="number" formControlName="lastSequence" placeholder="Enter last sequence" required min="0">
+          <mat-error *ngIf="isFieldInvalid('lastSequence')">
+            {{ getErrorMessage('lastSequence') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Sequence Length -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Sequence Length</mat-label>
+          <input matInput type="number" formControlName="sequenceLength" placeholder="Enter sequence length" required min="1">
+          <mat-hint>Minimum length for the sequence number</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('sequenceLength')">
+            {{ getErrorMessage('sequenceLength') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || configForm.invalid">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

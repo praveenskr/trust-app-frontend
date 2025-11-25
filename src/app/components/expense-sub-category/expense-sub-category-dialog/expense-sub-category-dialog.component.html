@@ -1,0 +1,83 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Expense Sub-Category' : 'Add New Expense Sub-Category' }}</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="expenseSubCategoryForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <!-- Expense Category -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Expense Category</mat-label>
+          <mat-select formControlName="categoryId" required>
+            <mat-option *ngFor="let category of expenseCategories" [value]="category.id">
+              {{ category.name }} ({{ category.code }})
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="isLoadingCategories">Loading categories...</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('categoryId')">
+            {{ getErrorMessage('categoryId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Sub-Category Code -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Sub-Category Code</mat-label>
+          <input matInput formControlName="code" placeholder="Enter sub-category code" required>
+          <mat-hint>Maximum 50 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('code')">
+            {{ getErrorMessage('code') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Sub-Category Name -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Sub-Category Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter sub-category name" required>
+          <mat-hint>Maximum 255 characters</mat-hint>
+          <mat-error *ngIf="isFieldInvalid('name')">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3" placeholder="Enter description (optional)"></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <!-- Display Order -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Display Order</mat-label>
+          <input matInput type="number" formControlName="displayOrder" placeholder="Enter display order">
+          <mat-hint>Optional - Used for sorting</mat-hint>
+        </mat-form-field>
+
+        <!-- Is Active -->
+        <div class="checkbox-field">
+          <mat-checkbox formControlName="isActive" color="primary">
+            Active
+          </mat-checkbox>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || expenseSubCategoryForm.invalid">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

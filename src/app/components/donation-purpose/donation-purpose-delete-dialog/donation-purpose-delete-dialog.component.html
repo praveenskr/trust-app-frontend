@@ -1,0 +1,22 @@
+<div class="delete-dialog-container">
+  <h2 mat-dialog-title>Delete Donation Purpose</h2>
+  
+  <mat-dialog-content>
+    <p>Are you sure you want to delete the following donation purpose?</p>
+    <div class="purpose-details">
+      <p><strong>Code:</strong> {{ data.donationPurpose.code }}</p>
+      <p><strong>Name:</strong> {{ data.donationPurpose.name }}</p>
+    </div>
+    <p class="warning-text">This action cannot be undone.</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</div>
+

@@ -1,0 +1,107 @@
+.dialog-container {
+  padding: 0;
+  min-width: 750px;
+  max-width: 90vw;
+}
+
+h2[mat-dialog-title] {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  padding: 24px 24px 20px 24px;
+}
+
+mat-dialog-content {
+  padding: 0 24px;
+  min-height: 300px;
+  overflow: visible;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 24px;
+  height: 100%;
+}
+
+mat-dialog-actions {
+  padding: 16px 24px 24px 24px;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.button-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+::ng-deep .mat-mdc-dialog-content {
+  max-height: calc(85vh - 140px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+  display: block;
+}
+
+::ng-deep .mat-mdc-form-field-wrapper {
+  padding-bottom: 1.34375em;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 4px;
+  position: relative;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  padding-bottom: 0;
+}
+
+::ng-deep .mdc-text-field {
+  padding: 0;
+}
+
+::ng-deep .mat-mdc-form-field-hint-wrapper,
+::ng-deep .mat-mdc-form-field-error-wrapper {
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .dialog-container {
+    min-width: auto;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
