@@ -1,11 +1,14 @@
-<div class="dialog-container">
-  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Branch' : 'Add New Branch' }}</h2>
+<div class="w-full max-w-3xl">
+  <div class="bg-blue-600 px-6 py-4">
+    <h2 class="text-xl font-semibold text-white">
+      {{ isEditMode ? 'Edit Branch' : 'Add New Branch' }}
+    </h2>
+  </div>
   
-  <mat-dialog-content>
-    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <!-- Branch Code -->
-        <mat-form-field appearance="outline" class="form-field">
+  <mat-dialog-content class="px-6 pb-6 bg-white">
+    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="space-y-6 pt-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Branch Code</mat-label>
           <input matInput formControlName="code" placeholder="Enter branch code" required>
           <mat-hint>Maximum 50 characters</mat-hint>
@@ -14,8 +17,7 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Branch Name -->
-        <mat-form-field appearance="outline" class="form-field">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Branch Name</mat-label>
           <input matInput formControlName="name" placeholder="Enter branch name" required>
           <mat-hint>Maximum 255 characters</mat-hint>
@@ -25,43 +27,37 @@
         </mat-form-field>
       </div>
 
-      <!-- Address -->
-      <mat-form-field appearance="outline" class="full-width">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Address</mat-label>
         <textarea matInput formControlName="address" rows="2" placeholder="Enter address (optional)"></textarea>
       </mat-form-field>
 
-      <div class="form-row">
-        <!-- City -->
-        <mat-form-field appearance="outline" class="form-field">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>City</mat-label>
           <input matInput formControlName="city" placeholder="Enter city (optional)">
         </mat-form-field>
 
-        <!-- State -->
-        <mat-form-field appearance="outline" class="form-field">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>State</mat-label>
           <input matInput formControlName="state" placeholder="Enter state (optional)">
         </mat-form-field>
       </div>
 
-      <div class="form-row">
-        <!-- Pincode -->
-        <mat-form-field appearance="outline" class="form-field">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Pincode</mat-label>
           <input matInput formControlName="pincode" placeholder="Enter pincode (optional)">
         </mat-form-field>
 
-        <!-- Phone -->
-        <mat-form-field appearance="outline" class="form-field">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Phone</mat-label>
           <input matInput formControlName="phone" placeholder="Enter phone (optional)">
         </mat-form-field>
       </div>
 
-      <div class="form-row">
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="form-field">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" placeholder="Enter email (optional)">
           <mat-error *ngIf="isFieldInvalid('email')">
@@ -69,37 +65,37 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Contact Person -->
-        <mat-form-field appearance="outline" class="form-field">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Contact Person</mat-label>
           <input matInput formControlName="contactPerson" placeholder="Enter contact person (optional)">
         </mat-form-field>
       </div>
 
-      <div class="form-row">
-        <!-- Is Active -->
-        <div class="checkbox-field">
-          <mat-checkbox formControlName="isActive" color="primary">
-            Active
-          </mat-checkbox>
-        </div>
+      <div>
+        <mat-checkbox formControlName="isActive" color="primary">
+          Active
+        </mat-checkbox>
       </div>
     </form>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+  <mat-dialog-actions align="end" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button 
+      mat-button 
+      (click)="onCancel()" 
+      [disabled]="isSubmitting"
+      class="mr-3">
       Cancel
     </button>
     <button 
       mat-raised-button 
       color="primary" 
       (click)="onSubmit()"
-      [disabled]="isSubmitting || branchForm.invalid">
+      [disabled]="isSubmitting || branchForm.invalid"
+      class="flex items-center gap-2">
       <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
       <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
       <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
     </button>
   </mat-dialog-actions>
 </div>
-

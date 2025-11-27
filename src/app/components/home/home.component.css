@@ -1,26 +1,26 @@
+/* Modern Tailwind CSS styling for Home Component */
+
 .home-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .welcome-card {
-  margin-top: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-mat-card-title {
-  font-size: 28px;
-  font-weight: 500;
-  color: #333;
+.welcome-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
-
-mat-card-subtitle {
-  color: #666;
-  margin-top: 8px;
-}
-
-mat-card-content {
-  padding: 24px;
-  color: #666;
-  font-size: 16px;
-}
-

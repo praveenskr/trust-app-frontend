@@ -1,41 +1,41 @@
-<div class="donation-container">
+<div class="space-y-6">
   <!-- Filters Card -->
-  <mat-card class="filters-card">
-    <mat-card-header>
-      <mat-card-title>Filters</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="filters-grid">
-        <mat-form-field>
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h2 class="text-lg font-semibold text-gray-800">Filters</h2>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Donor Name</mat-label>
           <input matInput [(ngModel)]="filterDonorName" placeholder="Search by donor name">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Receipt Number</mat-label>
           <input matInput [(ngModel)]="filterReceiptNumber" placeholder="Search by receipt number">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>PAN Number</mat-label>
           <input matInput [(ngModel)]="filterPanNumber" placeholder="Search by PAN">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>From Date</mat-label>
           <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate">
           <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
           <mat-datepicker #fromPicker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>To Date</mat-label>
           <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate">
           <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
           <mat-datepicker #toPicker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Include Inactive</mat-label>
           <mat-select [(ngModel)]="includeInactive">
             <mat-option [value]="false">Active Only</mat-option>
@@ -44,91 +44,103 @@
         </mat-form-field>
       </div>
 
-      <div class="filter-actions">
-        <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="isLoading">
+      <div class="flex items-center gap-3 mt-6 pt-4 border-t border-gray-200">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="applyFilters()" 
+          [disabled]="isLoading"
+          class="flex items-center gap-2">
           <mat-icon>search</mat-icon>
           Apply Filters
         </button>
-        <button mat-button (click)="clearFilters()" [disabled]="isLoading">
+        <button 
+          mat-button 
+          (click)="clearFilters()" 
+          [disabled]="isLoading"
+          class="flex items-center gap-2">
           <mat-icon>clear</mat-icon>
           Clear
         </button>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 
   <!-- List of Donations -->
-  <mat-card class="list-card">
-    <mat-card-header>
-      <mat-card-title>Donations</mat-card-title>
-      <div class="header-actions">
-        <button mat-raised-button color="primary" (click)="openAddDialog()" [disabled]="isSubmitting">
-          <mat-icon>add</mat-icon>
-          Add Donation
-        </button>
-      </div>
-    </mat-card-header>
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+      <h2 class="text-lg font-semibold text-gray-800">Donations</h2>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="openAddDialog()" 
+        [disabled]="isSubmitting"
+        class="flex items-center gap-2">
+        <mat-icon>add</mat-icon>
+        Add Donation
+      </button>
+    </div>
 
-    <mat-card-content>
-      <div *ngIf="isLoading" class="loading-container">
+    <div class="p-6">
+      <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-12">
         <mat-spinner diameter="40"></mat-spinner>
-        <p>Loading donations...</p>
+        <p class="mt-4 text-gray-600">Loading donations...</p>
       </div>
 
-      <div *ngIf="!isLoading && donations.length === 0" class="empty-state">
-        <mat-icon>inbox</mat-icon>
-        <p>No donations found. Click the "Add Donation" button to create one.</p>
+      <div *ngIf="!isLoading && donations.length === 0" class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-gray-400 mb-4" style="font-size: 64px; width: 64px; height: 64px;">inbox</mat-icon>
+        <p class="text-gray-600 text-center">No donations found. Click the "Add Donation" button to create one.</p>
       </div>
 
-      <div *ngIf="!isLoading && donations.length > 0">
-        <table mat-table [dataSource]="donations" class="donation-table">
+      <div *ngIf="!isLoading && donations.length > 0" class="overflow-x-auto">
+        <table mat-table [dataSource]="donations" class="w-full">
           <!-- Receipt Number Column -->
           <ng-container matColumnDef="receiptNumber">
-            <th mat-header-cell *matHeaderCellDef>Receipt Number</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.receiptNumber }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Receipt Number</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.receiptNumber }}</td>
           </ng-container>
 
           <!-- Donor Name Column -->
           <ng-container matColumnDef="donorName">
-            <th mat-header-cell *matHeaderCellDef>Donor Name</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.donorName }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Donor Name</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.donorName }}</td>
           </ng-container>
 
           <!-- Amount Column -->
           <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef>Amount</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.amount | number:'1.2-2' }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Amount</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-b border-gray-100">{{ donation.amount | number:'1.2-2' }}</td>
           </ng-container>
 
           <!-- Payment Mode Column -->
           <ng-container matColumnDef="paymentMode">
-            <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.paymentMode.name }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Payment Mode</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.paymentMode.name }}</td>
           </ng-container>
 
           <!-- Purpose Column -->
           <ng-container matColumnDef="purpose">
-            <th mat-header-cell *matHeaderCellDef>Purpose</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.purpose.name }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Purpose</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.purpose.name }}</td>
           </ng-container>
 
           <!-- Branch Column -->
           <ng-container matColumnDef="branch">
-            <th mat-header-cell *matHeaderCellDef>Branch</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.branch.name }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Branch</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.branch.name }}</td>
           </ng-container>
 
           <!-- Donation Date Column -->
           <ng-container matColumnDef="donationDate">
-            <th mat-header-cell *matHeaderCellDef>Donation Date</th>
-            <td mat-cell *matCellDef="let donation">{{ donation.donationDate }}</td>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Donation Date</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100">{{ donation.donationDate }}</td>
           </ng-container>
 
           <!-- Receipt Generated Column -->
           <ng-container matColumnDef="receiptGenerated">
-            <th mat-header-cell *matHeaderCellDef>Receipt</th>
-            <td mat-cell *matCellDef="let donation">
-              <span [class]="donation.receiptGenerated ? 'status-active' : 'status-inactive'">
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Receipt</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap border-b border-gray-100">
+              <span [class]="donation.receiptGenerated ? 'px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800' : 'px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800'">
                 {{ donation.receiptGenerated ? 'Generated' : 'Not Generated' }}
               </span>
             </td>
@@ -136,41 +148,46 @@
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let donation">
-              <button 
-                mat-icon-button 
-                color="primary" 
-                title="Edit"
-                (click)="openEditDialog(donation)"
-                [disabled]="isSubmitting || donation.receiptGenerated">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button 
-                mat-icon-button 
-                color="warn" 
-                title="Delete"
-                (click)="openDeleteDialog(donation)"
-                [disabled]="isSubmitting || donation.receiptGenerated">
-                <mat-icon>delete</mat-icon>
-              </button>
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 border-b border-gray-200">Actions</th>
+            <td mat-cell *matCellDef="let donation" class="px-6 py-4 whitespace-nowrap text-sm font-medium border-b border-gray-100">
+              <div class="flex items-center gap-2">
+                <button 
+                  mat-icon-button 
+                  color="primary" 
+                  title="Edit"
+                  (click)="openEditDialog(donation)"
+                  [disabled]="isSubmitting || donation.receiptGenerated"
+                  class="hover:bg-blue-50">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button 
+                  mat-icon-button 
+                  color="warn" 
+                  title="Delete"
+                  (click)="openDeleteDialog(donation)"
+                  [disabled]="isSubmitting || donation.receiptGenerated"
+                  class="hover:bg-red-50">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
         </table>
 
-        <mat-paginator
-          [length]="totalElements"
-          [pageSize]="pageSize"
-          [pageIndex]="pageIndex"
-          [pageSizeOptions]="pageSizeOptions"
-          [showFirstLastButtons]="true"
-          (page)="onPageChange($event)">
-        </mat-paginator>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <mat-paginator
+            [length]="totalElements"
+            [pageSize]="pageSize"
+            [pageIndex]="pageIndex"
+            [pageSizeOptions]="pageSizeOptions"
+            [showFirstLastButtons]="true"
+            (page)="onPageChange($event)">
+          </mat-paginator>
+        </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>
-

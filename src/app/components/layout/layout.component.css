@@ -1,219 +1,87 @@
-.sidenav-container {
-  height: 100vh;
+/* Modern Tailwind CSS styling for Layout Component */
+
+/* Sidebar Enhancements */
+::ng-deep mat-sidenav {
+  background-color: transparent !important;
+  border-right: none !important;
 }
 
-.sidenav {
-  width: 280px;
-  background-color: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
+::ng-deep .mat-drawer-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
 }
 
-.sidebar-header {
-  padding: 20px;
-  background-color: #667eea;
-  color: white;
-  text-align: center;
-}
-
-.sidebar-header h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
-}
-
-mat-nav-list {
-  padding-top: 0;
-}
-
-mat-list-item {
-  height: 48px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: flex;
-  align-items: center;
-}
-
-mat-list-item:hover {
-  background-color: #e8eaf6;
-}
-
-mat-list-item.active {
-  background-color: #667eea;
-  color: white;
-}
-
-mat-list-item.active mat-icon {
-  color: white;
-}
-
-mat-list-item mat-icon,
-a[mat-list-item] mat-icon {
-  margin-right: 16px;
-  color: #666;
-  vertical-align: middle;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-mat-list-item span,
-a[mat-list-item] span {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  line-height: 1.5;
-}
-
-.master-menu-item {
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-
-.expand-icon {
-  margin-left: auto !important;
-  margin-right: 0 !important;
-  vertical-align: middle;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sub-menu {
-  background-color: #fafafa;
-  padding-left: 0;
-}
-
-.sub-menu-item {
-  padding-left: 64px !important;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-}
-
-.sub-menu-item mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sub-menu-item span {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-}
-
-.toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.toolbar-title {
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-name {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.content {
-  padding: 24px;
-  min-height: calc(100vh - 64px);
-  background-color: #fafafa;
-}
-
-::ng-deep .mat-mdc-menu-panel {
-  min-width: 200px;
-}
-
-/* Fix icon and text alignment in list items */
-::ng-deep mat-list-item,
-::ng-deep a[mat-list-item] {
-  display: flex !important;
-  align-items: center !important;
-}
-
-::ng-deep mat-list-item .mdc-list-item__content,
-::ng-deep mat-list-item .mat-mdc-list-item-content,
-::ng-deep a[mat-list-item] .mdc-list-item__content,
-::ng-deep a[mat-list-item] .mat-mdc-list-item-content {
-  display: flex !important;
-  align-items: center !important;
-  flex-direction: row !important;
-  height: 100% !important;
-  width: 100% !important;
-}
-
-::ng-deep mat-list-item .mdc-list-item__content mat-icon,
-::ng-deep mat-list-item .mat-mdc-list-item-content mat-icon,
-::ng-deep a[mat-list-item] .mdc-list-item__content mat-icon,
-::ng-deep a[mat-list-item] .mat-mdc-list-item-content mat-icon {
-  margin-right: 16px !important;
-  flex-shrink: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  vertical-align: middle !important;
-  line-height: 1 !important;
-}
-
-::ng-deep mat-list-item .mdc-list-item__content span,
-::ng-deep mat-list-item .mat-mdc-list-item-content span,
-::ng-deep a[mat-list-item] .mdc-list-item__content span,
-::ng-deep a[mat-list-item] .mat-mdc-list-item-content span {
-  display: inline-flex !important;
-  align-items: center !important;
-  flex: 1;
-  vertical-align: middle !important;
-  line-height: 1.5 !important;
-}
-
-::ng-deep .master-menu-item .mdc-list-item__content,
-::ng-deep .master-menu-item .mat-mdc-list-item-content {
-  display: flex !important;
-  align-items: center !important;
-  width: 100%;
-}
-
-::ng-deep .sub-menu-item .mdc-list-item__content,
-::ng-deep .sub-menu-item .mat-mdc-list-item-content {
-  display: flex !important;
-  align-items: center !important;
-}
-
-/* Additional fix for anchor-based list items */
-::ng-deep a[mat-list-item] {
+/* Sidebar Navigation */
+::ng-deep .mat-sidenav a {
   text-decoration: none;
+  display: block;
+  transition: all 0.2s ease;
 }
 
-::ng-deep a[mat-list-item] mat-icon {
-  margin-right: 16px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+::ng-deep .mat-sidenav a:hover {
+  transform: translateX(4px);
 }
 
-::ng-deep a[mat-list-item] span {
-  display: inline-flex !important;
-  align-items: center !important;
+::ng-deep .mat-sidenav button {
+  text-align: left;
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
+::ng-deep .mat-sidenav button:hover {
+  transform: translateX(4px);
+}
+
+/* Toolbar Enhancements */
+::ng-deep mat-toolbar {
+  padding: 0 !important;
+  min-height: 64px !important;
+  height: 64px !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+::ng-deep .mat-toolbar-row {
+  height: 64px !important;
+  padding: 0 !important;
+}
+
+::ng-deep .mat-toolbar.mat-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: white !important;
+}
+
+/* User Menu Enhancements */
+::ng-deep .mat-mdc-menu-panel {
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  margin-top: 8px !important;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::ng-deep .mat-mdc-menu-item {
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .mat-mdc-menu-item:hover {
+  background-color: #f3f4f6 !important;
+  transform: translateX(4px);
+}
+
+/* Active Menu Item */
+::ng-deep .mat-sidenav a.router-link-active {
+  background: linear-gradient(90deg, #dbeafe 0%, #bfdbfe 100%) !important;
+  border-left: 4px solid #2563eb !important;
+  font-weight: 600 !important;
+}

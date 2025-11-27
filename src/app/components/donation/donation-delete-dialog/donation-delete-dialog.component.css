@@ -1,44 +1,92 @@
-.dialog-container {
-  padding: 0;
-  min-width: 400px;
+/* Modern Tailwind CSS styling for Donation Delete Dialog Component */
+
+/* Dialog Container */
+::ng-deep .mat-mdc-dialog-container {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
-h2[mat-dialog-title] {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
-  padding: 24px 24px 20px 24px;
+/* Warning Header */
+.warning-header {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  padding: 1.5rem;
+  color: white;
 }
 
-mat-dialog-content {
-  padding: 0 24px;
+/* Warning Icon */
+.warning-icon {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-mat-dialog-content p {
-  margin: 0 0 16px 0;
-  color: #333;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
+/* Content Area */
+.delete-content {
+  padding: 1.5rem;
+  background: white;
+}
+
+/* Donation Details */
 .donation-details {
-  background-color: #f5f5f5;
-  padding: 16px;
-  border-radius: 4px;
-  margin: 16px 0;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #e5e7eb;
 }
 
-.donation-details p {
-  margin: 8px 0;
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.warning {
-  color: #f44336;
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.detail-value {
+  color: #1f2937;
   font-weight: 500;
-  margin-top: 16px !important;
 }
 
-mat-dialog-actions {
-  padding: 16px 24px 24px 24px;
-  margin: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
+/* Button Enhancements */
+::ng-deep .mat-mdc-button.mat-warn {
+  color: #ef4444 !important;
+  transition: all 0.2s ease !important;
 }
 
+::ng-deep .mat-mdc-button.mat-warn:hover:not([disabled]) {
+  background-color: #fee2e2 !important;
+  transform: translateY(-1px);
+}
+
+::ng-deep .mat-mdc-button {
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .mat-mdc-button:hover:not([disabled]) {
+  background-color: #f3f4f6 !important;
+  transform: translateY(-1px);
+}
+
+/* Dialog Actions */
+::ng-deep .mat-mdc-dialog-actions {
+  background: #f9fafb;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}

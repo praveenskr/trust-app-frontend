@@ -1,15 +1,309 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* You can add global styles to this file, and also import other style files */
 
 html, body {
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Inter', 'Roboto', "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Material Form Field Improvements */
+::ng-deep .mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 4px;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  padding-bottom: 0;
+}
+
+::ng-deep .mdc-text-field {
+  padding: 0;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper {
+  margin: 0;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline {
+  border-color: #d1d5db !important;
+  border-width: 1px !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline {
+  border-color: #2563eb !important;
+  border-width: 2px !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-color: #d1d5db !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing {
+  border-color: #2563eb !important;
+}
+
+/* Material Button Improvements */
+::ng-deep .mat-mdc-raised-button {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+::ng-deep .mat-mdc-raised-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+::ng-deep .mat-mdc-raised-button.mat-primary {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+  background-color: #1d4ed8 !important;
+}
+
+::ng-deep .mat-mdc-button {
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+::ng-deep .mat-mdc-button:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Material Table Improvements */
+::ng-deep .mat-mdc-table {
+  background: white;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+::ng-deep .mat-mdc-header-row {
+  background-color: #f9fafb !important;
+  height: 48px !important;
+}
+
+::ng-deep .mat-mdc-header-cell {
+  color: #374151 !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 12px 24px !important;
+}
+
+::ng-deep .mat-mdc-row {
+  border-bottom: 1px solid #f3f4f6 !important;
+  height: 56px !important;
+}
+
+::ng-deep .mat-mdc-row:hover {
+  background-color: #f9fafb !important;
+}
+
+::ng-deep .mat-mdc-cell {
+  color: #111827 !important;
+  font-size: 0.875rem !important;
+  padding: 16px 24px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+::ng-deep .mat-mdc-row:last-child .mat-mdc-cell {
+  border-bottom: none !important;
+}
+
+/* Material Dialog Improvements */
+::ng-deep .mat-mdc-dialog-container {
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+::ng-deep .mat-mdc-dialog-content {
+  padding: 0 !important;
+  max-height: 80vh !important;
+}
+
+/* Material Menu Improvements */
+::ng-deep .mat-mdc-menu-panel {
+  min-width: 200px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  margin-top: 8px !important;
+}
+
+/* Material Paginator Improvements */
+::ng-deep .mat-mdc-paginator {
+  background: white !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+/* Material Icon Button Improvements */
+::ng-deep .mat-mdc-icon-button {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+}
+
+::ng-deep .mat-mdc-icon-button .mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+::ng-deep .mat-mdc-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Material Select Improvements */
+::ng-deep .mat-mdc-select-panel {
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  margin-top: 4px !important;
+}
+
+::ng-deep .mat-mdc-select-trigger {
+  padding: 0 !important;
+}
+
+/* Material Datepicker Improvements */
+::ng-deep .mat-datepicker-popup {
+  border-radius: 8px !important;
+}
+
+/* Material Sidenav */
+::ng-deep .mat-drawer {
+  background-color: transparent !important;
+}
+
+::ng-deep .mat-drawer-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Material Toolbar */
+::ng-deep .mat-toolbar {
+  padding: 0 !important;
+  min-height: 64px !important;
+  height: 64px !important;
+}
+
+::ng-deep .mat-toolbar-row {
+  height: 64px !important;
+  padding: 0 !important;
+}
+
+::ng-deep .mat-toolbar.mat-primary {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+/* Material Form Field Input */
+::ng-deep .mat-mdc-form-field-infix {
+  padding: 12px 0 !important;
+  min-height: 40px !important;
+}
+
+::ng-deep .mat-mdc-text-field-input {
+  padding: 0 !important;
+  font-size: 14px !important;
+}
+
+::ng-deep .mat-mdc-form-field-label {
+  font-size: 14px !important;
+}
+
+/* Card Shadow - Subtle like in images */
+.shadow-sm {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Status Badge Styles */
+.status-active {
+  @apply px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800;
+}
+
+.status-inactive {
+  @apply px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800;
+}
+
+/* Remove Material default margins */
+::ng-deep .mat-mdc-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+/* Better spacing for form fields */
+::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0;
+}
+
+/* Icon improvements */
+::ng-deep .mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Checkbox improvements */
+::ng-deep .mat-mdc-checkbox {
+  margin-right: 8px;
+}
+
+/* Better focus states */
+::ng-deep .mat-mdc-button:focus,
+::ng-deep .mat-mdc-raised-button:focus,
+::ng-deep .mat-mdc-icon-button:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}

@@ -1,74 +1,86 @@
-<div class="login-container">
-  <mat-card class="login-card">
-    <mat-card-header>
-      <mat-card-title>Welcome Back</mat-card-title>
-      <mat-card-subtitle>Sign in to your account</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="Enter your email" required>
-          <mat-error *ngIf="isFieldInvalid('email')">
-            {{ getErrorMessage('email') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Password -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input 
-            matInput 
-            [type]="hidePassword ? 'password' : 'text'" 
-            formControlName="password" 
-            placeholder="Enter your password" 
-            required>
-          <button 
-            mat-icon-button 
-            matSuffix 
-            (click)="togglePasswordVisibility()" 
-            type="button"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hidePassword">
-            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-          <mat-error *ngIf="isFieldInvalid('password')">
-            {{ getErrorMessage('password') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Forgot Password Link -->
-        <div class="forgot-password-container">
-          <a (click)="openForgotPasswordDialog()" class="forgot-password-link">
-            Forgot password?
-          </a>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4">
+  <div class="w-full max-w-md">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
         </div>
+        <h1 class="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+        <p class="text-blue-100">Sign in to your account</p>
+      </div>
 
-        <!-- Submit Button -->
-        <div class="button-container">
+      <div class="p-8">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="Enter your email" required>
+            <mat-error *ngIf="isFieldInvalid('email')">
+              {{ getErrorMessage('email') }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Password</mat-label>
+            <input 
+              matInput 
+              [type]="hidePassword ? 'password' : 'text'" 
+              formControlName="password" 
+              placeholder="Enter your password" 
+              required>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              (click)="togglePasswordVisibility()" 
+              type="button"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="isFieldInvalid('password')">
+              {{ getErrorMessage('password') }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Forgot Password Link -->
+          <div class="flex justify-end">
+            <button 
+              type="button"
+              (click)="openForgotPasswordDialog()"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium focus:outline-none transition-colors">
+              Forgot password?
+            </button>
+          </div>
+
+          <!-- Submit Button -->
           <button
             mat-raised-button
             color="primary"
             type="submit"
             [disabled]="isSubmitting || loginForm.invalid"
-            class="submit-button">
+            class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 font-semibold">
             <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
             <span *ngIf="!isSubmitting">Sign In</span>
             <span *ngIf="isSubmitting">Signing in...</span>
           </button>
-        </div>
 
-        <!-- Register Link -->
-        <div class="register-link-container">
-          <p class="register-text">
-            Don't have an account?
-            <a (click)="navigateToRegister()" class="register-link">Sign up here</a>
-          </p>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+          <!-- Register Link -->
+          <div class="text-center pt-4 border-t border-gray-200">
+            <p class="text-sm text-gray-600">
+              Don't have an account?
+              <button 
+                type="button"
+                (click)="navigateToRegister()"
+                class="text-blue-600 hover:text-blue-700 font-semibold focus:outline-none transition-colors">
+                Sign up here
+              </button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-
