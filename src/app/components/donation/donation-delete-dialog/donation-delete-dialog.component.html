@@ -1,0 +1,28 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>Delete Donation</h2>
+  
+  <mat-dialog-content>
+    <p>Are you sure you want to delete this donation transaction?</p>
+    <div class="donation-details">
+      <p><strong>Receipt Number:</strong> {{ data.donation.receiptNumber }}</p>
+      <p><strong>Donor Name:</strong> {{ data.donation.donorName }}</p>
+      <p><strong>Amount:</strong> {{ data.donation.amount | number:'1.2-2' }}</p>
+      <p><strong>Date:</strong> {{ data.donation.donationDate }}</p>
+    </div>
+    <p class="warning" *ngIf="data.donation.receiptGenerated">
+      <strong>Warning:</strong> This donation has a generated receipt. You cannot delete it.
+    </p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button 
+      mat-raised-button 
+      color="warn" 
+      (click)="onConfirm()"
+      [disabled]="data.donation.receiptGenerated">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</div>
+

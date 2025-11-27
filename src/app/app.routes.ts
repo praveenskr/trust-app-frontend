@@ -15,6 +15,7 @@ import { SubscriptionDiscountComponent } from './components/subscription-discoun
 import { VendorComponent } from './components/vendor/vendor.component';
 import { PaymentModeComponent } from './components/payment-mode/payment-mode.component';
 import { SerialNumberConfigComponent } from './components/serial-number-config/serial-number-config.component';
+import { DonationComponent } from './components/donation/donation.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -90,6 +91,15 @@ export const routes: Routes = [
           {
             path: 'branch',
             component: BranchComponent
+          }
+        ]
+      },
+      {
+        path: 'transactions',
+        children: [
+          {
+            path: 'donation',
+            component: DonationComponent
           }
         ]
       }

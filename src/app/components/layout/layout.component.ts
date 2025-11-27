@@ -53,7 +53,12 @@ export class LayoutComponent implements OnInit {
     { label: 'Branch', icon: 'business', route: '/home/master/branch' }
   ];
 
+  transactionMenuItems: MenuItem[] = [
+    { label: 'Donation', icon: 'volunteer_activism', route: '/home/transactions/donation' }
+  ];
+
   isMasterMenuOpen = false;
+  isTransactionMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -67,6 +72,10 @@ export class LayoutComponent implements OnInit {
 
   toggleMasterMenu(): void {
     this.isMasterMenuOpen = !this.isMasterMenuOpen;
+  }
+
+  toggleTransactionMenu(): void {
+    this.isTransactionMenuOpen = !this.isTransactionMenuOpen;
   }
 
   logout(): void {

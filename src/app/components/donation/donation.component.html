@@ -1,0 +1,176 @@
+<div class="donation-container">
+  <!-- Filters Card -->
+  <mat-card class="filters-card">
+    <mat-card-header>
+      <mat-card-title>Filters</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="filters-grid">
+        <mat-form-field>
+          <mat-label>Donor Name</mat-label>
+          <input matInput [(ngModel)]="filterDonorName" placeholder="Search by donor name">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Receipt Number</mat-label>
+          <input matInput [(ngModel)]="filterReceiptNumber" placeholder="Search by receipt number">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>PAN Number</mat-label>
+          <input matInput [(ngModel)]="filterPanNumber" placeholder="Search by PAN">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate">
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate">
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Include Inactive</mat-label>
+          <mat-select [(ngModel)]="includeInactive">
+            <mat-option [value]="false">Active Only</mat-option>
+            <mat-option [value]="true">Include Inactive</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="isLoading">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button mat-button (click)="clearFilters()" [disabled]="isLoading">
+          <mat-icon>clear</mat-icon>
+          Clear
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- List of Donations -->
+  <mat-card class="list-card">
+    <mat-card-header>
+      <mat-card-title>Donations</mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="openAddDialog()" [disabled]="isSubmitting">
+          <mat-icon>add</mat-icon>
+          Add Donation
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading donations...</p>
+      </div>
+
+      <div *ngIf="!isLoading && donations.length === 0" class="empty-state">
+        <mat-icon>inbox</mat-icon>
+        <p>No donations found. Click the "Add Donation" button to create one.</p>
+      </div>
+
+      <div *ngIf="!isLoading && donations.length > 0">
+        <table mat-table [dataSource]="donations" class="donation-table">
+          <!-- Receipt Number Column -->
+          <ng-container matColumnDef="receiptNumber">
+            <th mat-header-cell *matHeaderCellDef>Receipt Number</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.receiptNumber }}</td>
+          </ng-container>
+
+          <!-- Donor Name Column -->
+          <ng-container matColumnDef="donorName">
+            <th mat-header-cell *matHeaderCellDef>Donor Name</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.donorName }}</td>
+          </ng-container>
+
+          <!-- Amount Column -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.amount | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <!-- Payment Mode Column -->
+          <ng-container matColumnDef="paymentMode">
+            <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.paymentMode.name }}</td>
+          </ng-container>
+
+          <!-- Purpose Column -->
+          <ng-container matColumnDef="purpose">
+            <th mat-header-cell *matHeaderCellDef>Purpose</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.purpose.name }}</td>
+          </ng-container>
+
+          <!-- Branch Column -->
+          <ng-container matColumnDef="branch">
+            <th mat-header-cell *matHeaderCellDef>Branch</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.branch.name }}</td>
+          </ng-container>
+
+          <!-- Donation Date Column -->
+          <ng-container matColumnDef="donationDate">
+            <th mat-header-cell *matHeaderCellDef>Donation Date</th>
+            <td mat-cell *matCellDef="let donation">{{ donation.donationDate }}</td>
+          </ng-container>
+
+          <!-- Receipt Generated Column -->
+          <ng-container matColumnDef="receiptGenerated">
+            <th mat-header-cell *matHeaderCellDef>Receipt</th>
+            <td mat-cell *matCellDef="let donation">
+              <span [class]="donation.receiptGenerated ? 'status-active' : 'status-inactive'">
+                {{ donation.receiptGenerated ? 'Generated' : 'Not Generated' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let donation">
+              <button 
+                mat-icon-button 
+                color="primary" 
+                title="Edit"
+                (click)="openEditDialog(donation)"
+                [disabled]="isSubmitting || donation.receiptGenerated">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                color="warn" 
+                title="Delete"
+                (click)="openDeleteDialog(donation)"
+                [disabled]="isSubmitting || donation.receiptGenerated">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

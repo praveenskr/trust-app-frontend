@@ -1,0 +1,168 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Donation' : 'Add New Donation' }}</h2>
+  
+  <mat-dialog-content>
+    <div *ngIf="isLoadingMasterData" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading master data...</p>
+    </div>
+
+    <form [formGroup]="donationForm" (ngSubmit)="onSubmit()" *ngIf="!isLoadingMasterData">
+      <!-- Donor Information -->
+      <div class="form-section">
+        <h3>Donor Information</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Donor Name</mat-label>
+            <input matInput formControlName="donorName" placeholder="Enter donor name" required>
+            <mat-error *ngIf="isFieldInvalid('donorName')">
+              {{ getErrorMessage('donorName') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>PAN Number</mat-label>
+            <input matInput formControlName="panNumber" placeholder="ABCDE1234F" maxlength="10">
+            <mat-hint>Format: ABCDE1234F</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('panNumber')">
+              {{ getErrorMessage('panNumber') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Donor Address</mat-label>
+          <textarea matInput formControlName="donorAddress" rows="2" placeholder="Enter donor address (optional)"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="donorPhone" placeholder="Enter phone number">
+            <mat-error *ngIf="isFieldInvalid('donorPhone')">
+              {{ getErrorMessage('donorPhone') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="donorEmail" placeholder="Enter email address">
+            <mat-error *ngIf="isFieldInvalid('donorEmail')">
+              {{ getErrorMessage('donorEmail') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Donation Details -->
+      <div class="form-section">
+        <h3>Donation Details</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" formControlName="amount" placeholder="0.00" step="0.01" min="0.01" required>
+            <mat-error *ngIf="isFieldInvalid('amount')">
+              {{ getErrorMessage('amount') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Donation Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="donationDate" required>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="isFieldInvalid('donationDate')">
+              {{ getErrorMessage('donationDate') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Payment Mode</mat-label>
+            <mat-select formControlName="paymentModeId" required>
+              <mat-option [value]="null">Select Payment Mode</mat-option>
+              <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">
+                {{ mode.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('paymentModeId')">
+              {{ getErrorMessage('paymentModeId') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Purpose</mat-label>
+            <mat-select formControlName="purposeId" required>
+              <mat-option [value]="null">Select Purpose</mat-option>
+              <mat-option *ngFor="let purpose of purposes" [value]="purpose.id">
+                {{ purpose.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('purposeId')">
+              {{ getErrorMessage('purposeId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Sub Category</mat-label>
+            <mat-select formControlName="subCategoryId">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let subCat of subCategories" [value]="subCat.id">
+                {{ subCat.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Event</mat-label>
+            <mat-select formControlName="eventId">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let event of events" [value]="event.id">
+                {{ event.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Branch</mat-label>
+          <mat-select formControlName="branchId" required>
+            <mat-option [value]="null">Select Branch</mat-option>
+            <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="isFieldInvalid('branchId')">
+            {{ getErrorMessage('branchId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notes</mat-label>
+          <textarea matInput formControlName="notes" rows="3" placeholder="Enter any additional notes (optional)"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting || isLoadingMasterData">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || donationForm.invalid || isLoadingMasterData">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

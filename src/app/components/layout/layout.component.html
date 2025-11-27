@@ -31,6 +31,26 @@
           <span>{{ item.label }}</span>
         </a>
       </div>
+
+      <!-- Transactions Menu Item with Sub-menu -->
+      <mat-list-item (click)="toggleTransactionMenu()" class="master-menu-item">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Transactions</span>
+        <mat-icon class="expand-icon">{{ isTransactionMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </mat-list-item>
+
+      <!-- Transactions Sub-menu Items -->
+      <div *ngIf="isTransactionMenuOpen" class="sub-menu">
+        <a 
+          *ngFor="let item of transactionMenuItems" 
+          mat-list-item 
+          [routerLink]="item.route" 
+          routerLinkActive="active"
+          class="sub-menu-item">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </div>
     </mat-nav-list>
   </mat-sidenav>
 
