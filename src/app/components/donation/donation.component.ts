@@ -25,7 +25,7 @@ import { BranchService } from '../../services/branch.service';
 import { PaymentModeDTO } from '../../models/payment-mode.model';
 import { DonationPurposeDTO } from '../../models/donation-purpose.model';
 import { EventDTO } from '../../models/event.model';
-import { BranchDTO } from '../../models/branch.model';
+import { BranchDropdownDTO } from '../../models/branch.model';
 
 @Component({
   selector: 'app-donation',
@@ -82,7 +82,7 @@ export class DonationComponent implements OnInit {
   paymentModes: PaymentModeDTO[] = [];
   purposes: DonationPurposeDTO[] = [];
   events: EventDTO[] = [];
-  branches: BranchDTO[] = [];
+  branches: BranchDropdownDTO[] = [];
   isLoadingMasterData = false;
 
   constructor(
@@ -112,7 +112,7 @@ export class DonationComponent implements OnInit {
       this.paymentModeService.getAllPaymentModes().toPromise(),
       this.purposeService.getAllDonationPurposes().toPromise(),
       this.eventService.getAllEvents().toPromise(),
-      this.branchService.getAllBranches().toPromise()
+      this.branchService.getAllBranchesForDropdown().toPromise()
     ]).then(([paymentModesRes, purposesRes, eventsRes, branchesRes]) => {
       if (paymentModesRes?.status === 'success' && paymentModesRes.data) {
         this.paymentModes = paymentModesRes.data;

@@ -1,4 +1,75 @@
 <div class="space-y-6">
+  <!-- Filters Card -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h2 class="text-lg font-semibold text-gray-800">Filters</h2>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div>
+          <label for="searchFilter" class="input-label">Search</label>
+          <input 
+            id="searchFilter"
+            type="text" 
+            [(ngModel)]="searchFilter" 
+            placeholder="Search by name or code"
+            class="modern-input">
+        </div>
+
+        <div>
+          <label for="cityFilter" class="input-label">City</label>
+          <input 
+            id="cityFilter"
+            type="text" 
+            [(ngModel)]="cityFilter" 
+            placeholder="Filter by city"
+            class="modern-input">
+        </div>
+
+        <div>
+          <label for="stateFilter" class="input-label">State</label>
+          <input 
+            id="stateFilter"
+            type="text" 
+            [(ngModel)]="stateFilter" 
+            placeholder="Filter by state"
+            class="modern-input">
+        </div>
+
+        <div>
+          <label for="includeInactive" class="input-label">Include Inactive</label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select [(ngModel)]="includeInactive" id="includeInactive">
+              <mat-option [value]="false">Active Only</mat-option>
+              <mat-option [value]="true">Include Inactive</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 mt-6 pt-4 border-t border-gray-200">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="applyFilters()" 
+          [disabled]="isLoading"
+          class="flex items-center gap-2">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button 
+          mat-button 
+          (click)="clearFilters()" 
+          [disabled]="isLoading"
+          class="flex items-center gap-2">
+          <mat-icon>clear</mat-icon>
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branches Table Card -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200">
     <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
       <h2 class="text-lg font-semibold text-gray-800">Branches</h2>
@@ -99,6 +170,15 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
         </table>
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPageChange($event)"
+          class="border-t border-gray-200">
+        </mat-paginator>
       </div>
     </div>
   </div>

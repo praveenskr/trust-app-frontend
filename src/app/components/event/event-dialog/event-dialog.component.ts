@@ -10,7 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../../models/event.model';
 import { BranchService } from '../../../services/branch.service';
-import { BranchDTO } from '../../../models/branch.model';
+import { BranchDropdownDTO } from '../../../models/branch.model';
 
 @Component({
   selector: 'app-event-dialog',
@@ -35,7 +35,7 @@ export class EventDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   eventId?: number;
-  branches: BranchDTO[] = [];
+  branches: BranchDropdownDTO[] = [];
   isLoadingBranches = false;
   eventStatuses = EVENT_STATUSES;
 
@@ -57,7 +57,7 @@ export class EventDialogComponent implements OnInit {
 
   private loadBranches(): void {
     this.isLoadingBranches = true;
-    this.branchService.getAllBranches(false).subscribe({
+    this.branchService.getAllBranchesForDropdown().subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
           this.branches = response.data;

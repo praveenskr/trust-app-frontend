@@ -14,7 +14,7 @@ import { PaymentModeDTO } from '../../../models/payment-mode.model';
 import { DonationPurposeDTO } from '../../../models/donation-purpose.model';
 import { DonationSubCategoryDTO } from '../../../models/donation-sub-category.model';
 import { EventDTO } from '../../../models/event.model';
-import { BranchDTO } from '../../../models/branch.model';
+import { BranchDropdownDTO } from '../../../models/branch.model';
 
 @Component({
   selector: 'app-donation-dialog',
@@ -45,7 +45,7 @@ export class DonationDialogComponent implements OnInit {
   purposes: DonationPurposeDTO[] = [];
   subCategories: DonationSubCategoryDTO[] = [];
   events: EventDTO[] = [];
-  branches: BranchDTO[] = [];
+  branches: BranchDropdownDTO[] = [];
 
   isLoadingMasterData = false;
 
@@ -58,7 +58,7 @@ export class DonationDialogComponent implements OnInit {
       paymentModes?: PaymentModeDTO[];
       purposes?: DonationPurposeDTO[];
       events?: EventDTO[];
-      branches?: BranchDTO[];
+      branches?: BranchDropdownDTO[];
     }
   ) {
     this.isEditMode = !!data?.donation;
