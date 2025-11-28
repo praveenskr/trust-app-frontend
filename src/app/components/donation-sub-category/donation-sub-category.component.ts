@@ -82,7 +82,14 @@ export class DonationSubCategoryComponent implements OnInit {
     });
   }
 
-  openEditDialog(donationSubCategory: DonationSubCategoryDTO): void {
+  openEditDialog(donationSubCategory: DonationSubCategoryDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationSubCategoryDialogComponent, {
       width: '650px',
       maxWidth: '90vw',
@@ -92,13 +99,26 @@ export class DonationSubCategoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateDonationSubCategory(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(donationSubCategory: DonationSubCategoryDTO): void {
+  openDeleteDialog(donationSubCategory: DonationSubCategoryDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationSubCategoryDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +126,12 @@ export class DonationSubCategoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteDonationSubCategory(donationSubCategory.id);
       }

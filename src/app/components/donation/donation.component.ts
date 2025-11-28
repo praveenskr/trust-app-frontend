@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { DonationService } from '../../services/donation.service';
 import { DonationDTO, DonationCreateDTO, DonationUpdateDTO, PageResponse } from '../../models/donation.model';
@@ -47,6 +47,7 @@ import { BranchDTO } from '../../models/branch.model';
     MatDatepickerModule,
     MatNativeDateModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './donation.component.html',
   styleUrls: ['./donation.component.css']
 })
@@ -95,6 +96,11 @@ export class DonationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Set default dates to today
+    const today = new Date();
+    this.filterFromDate = today;
+    this.filterToDate = today;
+    
     this.loadMasterData();
     this.loadDonations();
   }
@@ -218,7 +224,14 @@ export class DonationComponent implements OnInit {
     });
   }
 
-  openEditDialog(donation: DonationDTO): void {
+  openEditDialog(donation: DonationDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationDialogComponent, {
       width: '900px',
       maxWidth: '95vw',
@@ -234,13 +247,26 @@ export class DonationComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateDonation(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(donation: DonationDTO): void {
+  openDeleteDialog(donation: DonationDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -248,6 +274,12 @@ export class DonationComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteDonation(donation.id);
       }

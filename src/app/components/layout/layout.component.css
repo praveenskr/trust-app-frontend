@@ -1,14 +1,62 @@
 /* Modern Tailwind CSS styling for Layout Component */
 
+/* Sidenav Container - Ensure proper layout */
+::ng-deep .mat-sidenav-container {
+  width: 100% !important;
+  height: 100vh !important;
+  display: flex !important;
+  flex-direction: row !important;
+  position: relative !important;
+}
+
 /* Sidebar Enhancements */
 ::ng-deep mat-sidenav {
   background-color: transparent !important;
   border-right: none !important;
+  position: relative !important;
+  transform: translate3d(0, 0, 0) !important;
+  transition: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure sidenav content pushes main content (side mode) */
+::ng-deep .mat-drawer-side {
+  position: relative !important;
+  transform: translate3d(0, 0, 0) !important;
+  visibility: visible !important;
 }
 
 ::ng-deep .mat-drawer-backdrop {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(4px);
+  display: none !important;
+}
+
+/* Main content area - dynamically resize */
+::ng-deep .mat-sidenav-content {
+  margin-left: 0 !important;
+  width: auto !important;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure all content inside resizes properly */
+::ng-deep .mat-sidenav-content > * {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure tables and cards inside content resize */
+::ng-deep .mat-sidenav-content mat-card,
+::ng-deep .mat-sidenav-content .mat-mdc-table,
+::ng-deep .mat-sidenav-content table {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
 }
 
 /* Sidebar Navigation */

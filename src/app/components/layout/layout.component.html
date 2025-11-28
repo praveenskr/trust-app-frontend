@@ -1,7 +1,7 @@
-<mat-sidenav-container class="h-screen">
+<mat-sidenav-container class="h-screen w-full">
   <!-- Sidebar -->
-  <mat-sidenav mode="side" opened class="w-64">
-    <div class="h-full bg-white border-r border-gray-200">
+  <mat-sidenav mode="side" opened class="w-64" [fixedInViewport]="false">
+    <div class="h-full bg-white border-r border-gray-200 overflow-y-auto">
       <div class="p-5 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-800">Trust App</h2>
       </div>
@@ -68,17 +68,17 @@
   </mat-sidenav>
 
   <!-- Main Content Area -->
-  <mat-sidenav-content class="flex flex-col bg-gray-50">
+  <mat-sidenav-content class="flex flex-col bg-gray-50 min-w-0">
     <!-- Header -->
-    <mat-toolbar color="primary" class="bg-blue-600 shadow-sm min-h-[64px] h-[64px]">
-      <div class="flex items-center justify-between w-full px-6">
-        <span class="text-white text-lg font-semibold">Trust App</span>
+    <mat-toolbar color="primary" class="bg-blue-600 shadow-sm min-h-[64px] h-[64px] flex-shrink-0">
+      <div class="flex items-center justify-between w-full px-6 min-w-0">
+        <span class="text-white text-lg font-semibold whitespace-nowrap">Trust App</span>
         
         <!-- User Menu -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 flex-shrink-0">
           <div class="text-right hidden md:block">
-            <p class="text-sm font-medium text-white">{{ user?.fullName || user?.username || 'User' }}</p>
-            <p class="text-xs text-blue-100">{{ user?.email }}</p>
+            <p class="text-sm font-medium text-white whitespace-nowrap">{{ user?.fullName || user?.username || 'User' }}</p>
+            <p class="text-xs text-blue-100 whitespace-nowrap">{{ user?.email }}</p>
           </div>
           <div [matMenuTriggerFor]="userMenu">
             <button mat-icon-button class="text-white hover:bg-blue-700 rounded-full transition-colors">
@@ -101,8 +101,8 @@
     </mat-toolbar>
 
     <!-- Page Content -->
-    <div class="flex-1 overflow-y-auto bg-gray-50">
-      <div class="p-6">
+    <div class="flex-1 overflow-y-auto bg-gray-50 min-w-0">
+      <div class="p-6 min-w-0">
         <router-outlet></router-outlet>
       </div>
     </div>

@@ -82,7 +82,14 @@ export class ExpenseSubCategoryComponent implements OnInit {
     });
   }
 
-  openEditDialog(expenseSubCategory: ExpenseSubCategoryDTO): void {
+  openEditDialog(expenseSubCategory: ExpenseSubCategoryDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(ExpenseSubCategoryDialogComponent, {
       width: '650px',
       maxWidth: '90vw',
@@ -92,13 +99,26 @@ export class ExpenseSubCategoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateExpenseSubCategory(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(expenseSubCategory: ExpenseSubCategoryDTO): void {
+  openDeleteDialog(expenseSubCategory: ExpenseSubCategoryDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(ExpenseSubCategoryDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +126,12 @@ export class ExpenseSubCategoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteExpenseSubCategory(expenseSubCategory.id);
       }

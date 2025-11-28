@@ -82,7 +82,14 @@ export class EventComponent implements OnInit {
     });
   }
 
-  openEditDialog(event: EventDTO): void {
+  openEditDialog(event: EventDTO, clickEvent?: Event): void {
+    // Blur the button to remove focus state
+    if (clickEvent) {
+      const target = clickEvent.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -92,13 +99,26 @@ export class EventComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (clickEvent) {
+        const target = clickEvent.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateEvent(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(event: EventDTO): void {
+  openDeleteDialog(event: EventDTO, clickEvent?: Event): void {
+    // Blur the button to remove focus state
+    if (clickEvent) {
+      const target = clickEvent.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(EventDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +126,12 @@ export class EventComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (clickEvent) {
+        const target = clickEvent.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteEvent(event.id);
       }

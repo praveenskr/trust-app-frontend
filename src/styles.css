@@ -40,48 +40,119 @@ body {
   background: #94a3b8;
 }
 
-/* Material Form Field Improvements */
+/* Modern Input Styles with Borders */
+.modern-input {
+  @apply w-full px-4 py-3 bg-white rounded-lg text-gray-900 placeholder-gray-400 
+         border border-gray-300 transition-all duration-200 ease-in-out;
+  outline: none;
+  font-size: 14px;
+}
+
+.modern-input:focus {
+  @apply border-blue-500 ring-2 ring-blue-500 ring-opacity-20 shadow-sm;
+}
+
+.modern-input:disabled {
+  @apply bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200;
+}
+
+.modern-input.error {
+  @apply bg-red-50 border-red-500 ring-2 ring-red-500 ring-opacity-20;
+}
+
+.modern-textarea {
+  @apply w-full px-4 py-3 bg-white rounded-lg text-gray-900 placeholder-gray-400 
+         border border-gray-300 transition-all duration-200 ease-in-out resize-none;
+  outline: none;
+  font-size: 14px;
+  min-height: 80px;
+}
+
+.modern-textarea:focus {
+  @apply border-blue-500 ring-2 ring-blue-500 ring-opacity-20 shadow-sm;
+}
+
+.modern-textarea:disabled {
+  @apply bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200;
+}
+
+.modern-textarea.error {
+  @apply bg-red-50 border-red-500 ring-2 ring-red-500 ring-opacity-20;
+}
+
+.input-label {
+  @apply block text-sm font-semibold text-gray-700 mb-2;
+}
+
+.input-error {
+  @apply text-sm text-red-600 mt-1.5 flex items-center gap-1;
+}
+
+.input-hint {
+  @apply text-xs text-gray-500 mt-1.5;
+}
+
+/* Modern Select Dropdown Styles */
+.modern-select {
+  @apply w-full px-4 py-3 bg-white rounded-lg text-gray-900 
+         border border-gray-300 transition-all duration-200 ease-in-out;
+  outline: none;
+  font-size: 14px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.modern-select:focus {
+  @apply border-blue-500 ring-2 ring-blue-500 ring-opacity-20 shadow-sm;
+}
+
+.modern-select:disabled {
+  @apply bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200;
+}
+
+.modern-select.error {
+  @apply bg-red-50 border-red-500 ring-2 ring-red-500 ring-opacity-20;
+}
+
+/* Modern Date Input Styles */
+.modern-date-input {
+  @apply w-full px-4 py-3 bg-white rounded-lg text-gray-900 placeholder-gray-400 
+         border border-gray-300 transition-all duration-200 ease-in-out;
+  outline: none;
+  font-size: 14px;
+}
+
+.modern-date-input:focus {
+  @apply border-blue-500 ring-2 ring-blue-500 ring-opacity-20 shadow-sm;
+}
+
+.modern-date-input:disabled {
+  @apply bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200;
+}
+
+.modern-date-input.error {
+  @apply bg-red-50 border-red-500 ring-2 ring-red-500 ring-opacity-20;
+}
+
+/* Material Form Field - Hide when using custom inputs */
 ::ng-deep .mat-mdc-form-field {
   font-size: 14px;
   width: 100%;
 }
 
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  margin-top: 4px;
+/* Hide Material floating labels when using custom labels */
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-floating-label {
+  display: none !important;
 }
 
-::ng-deep .mat-mdc-text-field-wrapper {
-  padding-bottom: 0;
-}
-
-::ng-deep .mdc-text-field {
-  padding: 0;
-}
-
-::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper {
-  margin: 0;
-}
-
-::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline {
-  border-color: #d1d5db !important;
-  border-width: 1px !important;
-}
-
-::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline {
-  border-color: #2563eb !important;
-  border-width: 2px !important;
-}
-
-::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
-::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch,
-::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing {
-  border-color: #d1d5db !important;
-}
-
-::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
-::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
-::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing {
-  border-color: #2563eb !important;
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch {
+  border-top: none !important;
+  padding: 0 !important;
+  width: 0 !important;
 }
 
 /* Material Button Improvements */
@@ -207,7 +278,90 @@ body {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
-/* Material Select Improvements */
+/* Material Select & DatePicker - Match text input styling EXACTLY */
+/* Target all notched outline parts for consistent borders - HIGH SPECIFICITY */
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper .mdc-notched-outline,
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper .mdc-notched-outline__trailing {
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Ensure all border parts are styled consistently - ADDITIONAL SPECIFICITY */
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Focus state for outline parts - ADDITIONAL SPECIFICITY */
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing {
+  border: 1px solid #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Default state - all borders same */
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+  border-radius: 0.5rem !important;
+  padding: 0 !important;
+}
+
+/* Focus state - match text input exactly */
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__trailing {
+  border: 1px solid #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Error state */
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid .mat-mdc-text-field-wrapper .mdc-notched-outline,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid .mat-mdc-text-field-wrapper .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid .mat-mdc-text-field-wrapper .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid .mat-mdc-text-field-wrapper .mdc-notched-outline__trailing {
+  border: 1px solid #ef4444 !important;
+}
+
+/* Error focus state */
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field-appearance-outline.mat-form-field-invalid.mat-focused .mat-mdc-text-field-wrapper .mdc-notched-outline__trailing {
+  border: 1px solid #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Match padding and height exactly */
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding: 0 !important;
+  min-height: 48px !important;
+  border-top: none !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-input {
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-select-trigger {
+  padding: 12px 16px !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  line-height: 24px !important;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-select-value-text {
+  font-size: 14px !important;
+  line-height: 24px !important;
+}
+
 ::ng-deep .mat-mdc-select-panel {
   border-radius: 8px !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
@@ -249,16 +403,6 @@ body {
   color: white !important;
 }
 
-/* Material Form Field Input */
-::ng-deep .mat-mdc-form-field-infix {
-  padding: 12px 0 !important;
-  min-height: 40px !important;
-}
-
-::ng-deep .mat-mdc-text-field-input {
-  padding: 0 !important;
-  font-size: 14px !important;
-}
 
 ::ng-deep .mat-mdc-form-field-label {
   font-size: 14px !important;

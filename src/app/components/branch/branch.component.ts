@@ -82,7 +82,14 @@ export class BranchComponent implements OnInit {
     });
   }
 
-  openEditDialog(branch: BranchDTO): void {
+  openEditDialog(branch: BranchDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(BranchDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -92,13 +99,26 @@ export class BranchComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateBranch(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(branch: BranchDTO): void {
+  openDeleteDialog(branch: BranchDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(BranchDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +126,12 @@ export class BranchComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteBranch(branch.id);
       }

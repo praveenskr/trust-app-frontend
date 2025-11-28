@@ -5,43 +5,64 @@
       <h2 class="text-lg font-semibold text-gray-800">Filters</h2>
     </div>
     <div class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Donor Name</mat-label>
-          <input matInput [(ngModel)]="filterDonorName" placeholder="Search by donor name">
-        </mat-form-field>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label for="filterDonorName" class="input-label">Donor Name</label>
+          <input 
+            id="filterDonorName"
+            type="text" 
+            [(ngModel)]="filterDonorName" 
+            placeholder="Search by donor name"
+            class="modern-input">
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Receipt Number</mat-label>
-          <input matInput [(ngModel)]="filterReceiptNumber" placeholder="Search by receipt number">
-        </mat-form-field>
+        <div>
+          <label for="filterReceiptNumber" class="input-label">Receipt Number</label>
+          <input 
+            id="filterReceiptNumber"
+            type="text" 
+            [(ngModel)]="filterReceiptNumber" 
+            placeholder="Search by receipt number"
+            class="modern-input">
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>PAN Number</mat-label>
-          <input matInput [(ngModel)]="filterPanNumber" placeholder="Search by PAN">
-        </mat-form-field>
+        <div>
+          <label for="filterPanNumber" class="input-label">PAN Number</label>
+          <input 
+            id="filterPanNumber"
+            type="text" 
+            [(ngModel)]="filterPanNumber" 
+            placeholder="Search by PAN"
+            class="modern-input">
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>From Date</mat-label>
-          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate">
-          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
-          <mat-datepicker #fromPicker></mat-datepicker>
-        </mat-form-field>
+        <div>
+          <label for="filterFromDate" class="input-label">From Date</label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate" id="filterFromDate">
+            <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>To Date</mat-label>
-          <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate">
-          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
-          <mat-datepicker #toPicker></mat-datepicker>
-        </mat-form-field>
+        <div>
+          <label for="filterToDate" class="input-label">To Date</label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate" id="filterToDate">
+            <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+            <mat-datepicker #toPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Include Inactive</mat-label>
-          <mat-select [(ngModel)]="includeInactive">
-            <mat-option [value]="false">Active Only</mat-option>
-            <mat-option [value]="true">Include Inactive</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div>
+          <label for="includeInactive" class="input-label">Include Inactive</label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select [(ngModel)]="includeInactive" id="includeInactive">
+              <mat-option [value]="false">Active Only</mat-option>
+              <mat-option [value]="true">Include Inactive</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="flex items-center gap-3 mt-6 pt-4 border-t border-gray-200">
@@ -77,7 +98,7 @@
         [disabled]="isSubmitting"
         class="flex items-center gap-2">
         <mat-icon>add</mat-icon>
-        Add Donation
+        Add
       </button>
     </div>
 
@@ -89,7 +110,7 @@
 
       <div *ngIf="!isLoading && donations.length === 0" class="flex flex-col items-center justify-center py-12">
         <mat-icon class="text-gray-400 mb-4" style="font-size: 64px; width: 64px; height: 64px;">inbox</mat-icon>
-        <p class="text-gray-600 text-center">No donations found. Click the "Add Donation" button to create one.</p>
+        <p class="text-gray-600 text-center">No donations found. Click the "Add" button to create one.</p>
       </div>
 
       <div *ngIf="!isLoading && donations.length > 0" class="overflow-x-auto">
@@ -155,7 +176,7 @@
                   mat-icon-button 
                   color="primary" 
                   title="Edit"
-                  (click)="openEditDialog(donation)"
+                  (click)="openEditDialog(donation, $event)"
                   [disabled]="isSubmitting || donation.receiptGenerated"
                   class="hover:bg-blue-50">
                   <mat-icon>edit</mat-icon>
@@ -164,7 +185,7 @@
                   mat-icon-button 
                   color="warn" 
                   title="Delete"
-                  (click)="openDeleteDialog(donation)"
+                  (click)="openDeleteDialog(donation, $event)"
                   [disabled]="isSubmitting || donation.receiptGenerated"
                   class="hover:bg-red-50">
                   <mat-icon>delete</mat-icon>

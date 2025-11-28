@@ -1,28 +1,31 @@
-<div class="subscription-plan-container">
-  <!-- List of Subscription Plans -->
-  <mat-card class="list-card">
-    <mat-card-header>
-      <mat-card-title>Subscription Plans</mat-card-title>
-      <div class="header-actions">
-        <button mat-raised-button color="primary" (click)="openAddDialog()">
-          <mat-icon>add</mat-icon>
-          Add
-        </button>
-      </div>
-    </mat-card-header>
+<div class="space-y-6">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-800">Subscription Plans</h2>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="openAddDialog()"
+        [disabled]="isSubmitting"
+        class="flex items-center gap-2">
+        <mat-icon>add</mat-icon>
+        Add
+      </button>
+    </div>
 
-    <mat-card-content>
-      <div *ngIf="isLoading" class="loading-container">
+    <div class="p-6">
+      <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-12">
         <mat-spinner diameter="40"></mat-spinner>
-        <p>Loading subscription plans...</p>
+        <p class="mt-4 text-gray-600">Loading subscription plans...</p>
       </div>
 
-      <div *ngIf="!isLoading && subscriptionPlans.length === 0" class="empty-state">
-        <mat-icon>inbox</mat-icon>
-        <p>No subscription plans found. Click the "Add" button to create one.</p>
+      <div *ngIf="!isLoading && subscriptionPlans.length === 0" class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-gray-400 mb-4" style="font-size: 64px; width: 64px; height: 64px;">inbox</mat-icon>
+        <p class="text-gray-600 text-center">No subscription plans found. Click the "Add" button to create one.</p>
       </div>
 
-      <table *ngIf="!isLoading && subscriptionPlans.length > 0" mat-table [dataSource]="subscriptionPlans" class="subscription-plan-table">
+      <div *ngIf="!isLoading && subscriptionPlans.length > 0" class="overflow-x-auto">
+        <table mat-table [dataSource]="subscriptionPlans" class="w-full">
         <!-- Code Column -->
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Code</th>
@@ -71,7 +74,7 @@
               mat-icon-button 
               color="primary" 
               title="Edit"
-              (click)="openEditDialog(plan)"
+              (click)="openEditDialog(plan, $event)"
               [disabled]="isSubmitting">
               <mat-icon>edit</mat-icon>
             </button>
@@ -79,17 +82,18 @@
               mat-icon-button 
               color="warn" 
               title="Delete"
-              (click)="openDeleteDialog(plan)"
+              (click)="openDeleteDialog(plan, $event)"
               [disabled]="isSubmitting">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </mat-card-content>
-  </mat-card>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 

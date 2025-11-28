@@ -2,13 +2,12 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { DonationDTO, DonationCreateDTO, DonationUpdateDTO } from '../../../models/donation.model';
 import { DonationSubCategoryService } from '../../../services/donation-sub-category.service';
 import { PaymentModeDTO } from '../../../models/payment-mode.model';
@@ -24,14 +23,14 @@ import { BranchDTO } from '../../../models/branch.model';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatNativeDateModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './donation-dialog.component.html',
   styleUrls: ['./donation-dialog.component.css']
 })

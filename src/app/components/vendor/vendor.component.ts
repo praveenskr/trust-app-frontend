@@ -83,7 +83,14 @@ export class VendorComponent implements OnInit {
     });
   }
 
-  openEditDialog(vendor: VendorDTO): void {
+  openEditDialog(vendor: VendorDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(VendorDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -93,13 +100,26 @@ export class VendorComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateVendor(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(vendor: VendorDTO): void {
+  openDeleteDialog(vendor: VendorDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(VendorDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -107,6 +127,12 @@ export class VendorComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteVendor(vendor.id);
       }

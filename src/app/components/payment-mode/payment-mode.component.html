@@ -72,7 +72,7 @@
                   mat-icon-button 
                   color="primary" 
                   title="Edit"
-                  (click)="openEditDialog(paymentMode)"
+                  (click)="openEditDialog(paymentMode, $event)"
                   [disabled]="isSubmitting"
                   class="hover:bg-blue-50">
                   <mat-icon>edit</mat-icon>
@@ -81,7 +81,7 @@
                   mat-icon-button 
                   color="warn" 
                   title="Delete"
-                  (click)="openDeleteDialog(paymentMode)"
+                  (click)="openDeleteDialog(paymentMode, $event)"
                   [disabled]="isSubmitting"
                   class="hover:bg-red-50">
                   <mat-icon>delete</mat-icon>

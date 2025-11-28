@@ -2,11 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { VendorCreateDTO, VendorDTO, VendorUpdateDTO } from '../../../models/vendor.model';
 
 @Component({
@@ -16,11 +12,7 @@ import { VendorCreateDTO, VendorDTO, VendorUpdateDTO } from '../../../models/ven
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatButtonModule
   ],
   templateUrl: './vendor-dialog.component.html',
   styleUrls: ['./vendor-dialog.component.css']

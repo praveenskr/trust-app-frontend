@@ -82,7 +82,14 @@ export class DonationPurposeComponent implements OnInit {
     });
   }
 
-  openEditDialog(donationPurpose: DonationPurposeDTO): void {
+  openEditDialog(donationPurpose: DonationPurposeDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationPurposeDialogComponent, {
       width: '650px',
       maxWidth: '90vw',
@@ -92,13 +99,26 @@ export class DonationPurposeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateDonationPurpose(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(donationPurpose: DonationPurposeDTO): void {
+  openDeleteDialog(donationPurpose: DonationPurposeDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(DonationPurposeDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +126,12 @@ export class DonationPurposeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteDonationPurpose(donationPurpose.id);
       }

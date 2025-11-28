@@ -83,7 +83,14 @@ export class SubscriptionDiscountComponent implements OnInit {
     });
   }
 
-  openEditDialog(subscriptionDiscount: SubscriptionDiscountDTO): void {
+  openEditDialog(subscriptionDiscount: SubscriptionDiscountDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(SubscriptionDiscountDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -93,13 +100,26 @@ export class SubscriptionDiscountComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateSubscriptionDiscount(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(subscriptionDiscount: SubscriptionDiscountDTO): void {
+  openDeleteDialog(subscriptionDiscount: SubscriptionDiscountDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(SubscriptionDiscountDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -107,6 +127,12 @@ export class SubscriptionDiscountComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteSubscriptionDiscount(subscriptionDiscount.id);
       }
