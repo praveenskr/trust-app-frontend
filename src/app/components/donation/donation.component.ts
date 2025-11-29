@@ -26,6 +26,7 @@ import { PaymentModeDTO } from '../../models/payment-mode.model';
 import { DonationPurposeDTO } from '../../models/donation-purpose.model';
 import { EventDTO } from '../../models/event.model';
 import { BranchDropdownDTO } from '../../models/branch.model';
+import { DonorDropdownDTO } from '../../models/donor.model';
 
 @Component({
   selector: 'app-donation',
@@ -83,6 +84,7 @@ export class DonationComponent implements OnInit {
   purposes: DonationPurposeDTO[] = [];
   events: EventDTO[] = [];
   branches: BranchDropdownDTO[] = [];
+  donors: DonorDropdownDTO[] = [];
   isLoadingMasterData = false;
 
   constructor(
@@ -112,8 +114,9 @@ export class DonationComponent implements OnInit {
       this.paymentModeService.getAllPaymentModes().toPromise(),
       this.purposeService.getAllDonationPurposes().toPromise(),
       this.eventService.getAllEvents().toPromise(),
-      this.branchService.getAllBranchesForDropdown().toPromise()
-    ]).then(([paymentModesRes, purposesRes, eventsRes, branchesRes]) => {
+      this.branchService.getAllBranchesForDropdown().toPromise(),
+      this.donationService.getAllActiveDonorNames().toPromise()
+    ]).then(([paymentModesRes, purposesRes, eventsRes, branchesRes, donorsRes]) => {
       if (paymentModesRes?.status === 'success' && paymentModesRes.data) {
         this.paymentModes = paymentModesRes.data;
       }
@@ -125,6 +128,9 @@ export class DonationComponent implements OnInit {
       }
       if (branchesRes?.status === 'success' && branchesRes.data) {
         this.branches = branchesRes.data;
+      }
+      if (donorsRes?.status === 'success' && donorsRes.data) {
+        this.donors = donorsRes.data;
       }
       this.isLoadingMasterData = false;
     }).catch(error => {

@@ -8,12 +8,19 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
           <label for="filterDonorName" class="input-label">Donor Name</label>
-          <input 
-            id="filterDonorName"
-            type="text" 
-            [(ngModel)]="filterDonorName" 
-            placeholder="Search by donor name"
-            class="modern-input">
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select
+              id="filterDonorName"
+              [(ngModel)]="filterDonorName"
+              placeholder="Select donor name">
+              <mat-option [value]="''">All Donors</mat-option>
+              <mat-option
+                *ngFor="let donor of donors"
+                [value]="donor.name">
+                {{ donor.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <div>

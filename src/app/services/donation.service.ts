@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { DonationDTO, DonationCreateDTO, DonationUpdateDTO, PageResponse } from '../models/donation.model';
+import { DonorDropdownDTO } from '../models/donor.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -87,6 +88,12 @@ export class DonationService {
     
     const params = new HttpParams().set('deletedBy', deletedBy.toString());
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`, { params });
+  }
+
+  getAllActiveDonorNames(): Observable<ApiResponse<DonorDropdownDTO[]>> {
+    return this.http.get<ApiResponse<DonorDropdownDTO[]>>(
+      `${this.apiUrl}/donor-names`
+    );
   }
 }
 
