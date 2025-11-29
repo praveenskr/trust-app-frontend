@@ -12,8 +12,8 @@
             <mat-select
               id="filterDonorName"
               [(ngModel)]="filterDonorName"
-              placeholder="Select donor name">
-              <mat-option [value]="''">All Donors</mat-option>
+              placeholder="All Donors">
+              <mat-option [value]="undefined">All Donors</mat-option>
               <mat-option
                 *ngFor="let donor of donors"
                 [value]="donor.name">
@@ -62,11 +62,18 @@
         </div>
 
         <div>
-          <label for="includeInactive" class="input-label">Include Inactive</label>
+          <label for="filterBranchId" class="input-label">Branch</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select [(ngModel)]="includeInactive" id="includeInactive">
-              <mat-option [value]="false">Active Only</mat-option>
-              <mat-option [value]="true">Include Inactive</mat-option>
+            <mat-select
+              id="filterBranchId"
+              [(ngModel)]="filterBranchId"
+              placeholder="All Branches">
+              <mat-option [value]="undefined">All Branches</mat-option>
+              <mat-option
+                *ngFor="let branch of branches"
+                [value]="branch.id">
+                {{ branch.name }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </div>

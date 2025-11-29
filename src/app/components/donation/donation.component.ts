@@ -74,7 +74,7 @@ export class DonationComponent implements OnInit {
   filterPaymentModeId?: number;
   filterFromDate?: Date;
   filterToDate?: Date;
-  filterDonorName = '';
+  filterDonorName?: string;
   filterPanNumber = '';
   filterReceiptNumber = '';
   includeInactive = false;
@@ -152,7 +152,7 @@ export class DonationComponent implements OnInit {
       this.filterPaymentModeId,
       fromDate,
       toDate,
-      this.filterDonorName || undefined,
+      this.filterDonorName,
       this.filterPanNumber || undefined,
       this.filterReceiptNumber || undefined,
       this.includeInactive,
@@ -196,7 +196,7 @@ export class DonationComponent implements OnInit {
     this.filterPaymentModeId = undefined;
     this.filterFromDate = undefined;
     this.filterToDate = undefined;
-    this.filterDonorName = '';
+    this.filterDonorName = undefined;
     this.filterPanNumber = '';
     this.filterReceiptNumber = '';
     this.includeInactive = false;
