@@ -26,3 +26,9 @@ export interface DonationSubCategoryUpdateDTO {
   isActive?: boolean;
 }
 
+export interface DonationSubCategoryDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+

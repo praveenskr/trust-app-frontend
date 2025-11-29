@@ -11,20 +11,19 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DonationService } from '../../services/donation.service';
 import { DonationDTO, DonationCreateDTO, DonationUpdateDTO, PageResponse } from '../../models/donation.model';
 import { DonationDialogComponent } from './donation-dialog/donation-dialog.component';
 import { DonationDeleteDialogComponent } from './donation-delete-dialog/donation-delete-dialog.component';
 import { PaymentModeService } from '../../services/payment-mode.service';
 import { DonationPurposeService } from '../../services/donation-purpose.service';
-import { EventService } from '../../services/event.service';
 import { BranchService } from '../../services/branch.service';
-import { PaymentModeDTO } from '../../models/payment-mode.model';
-import { DonationPurposeDTO } from '../../models/donation-purpose.model';
-import { EventDTO } from '../../models/event.model';
+import { PaymentModeDropdownDTO } from '../../models/payment-mode.model';
+import { DonationPurposeDropdownDTO } from '../../models/donation-purpose.model';
 import { BranchDropdownDTO } from '../../models/branch.model';
 import { DonorDropdownDTO } from '../../models/donor.model';
 
@@ -34,6 +33,7 @@ import { DonorDropdownDTO } from '../../models/donor.model';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
@@ -45,6 +45,7 @@ import { DonorDropdownDTO } from '../../models/donor.model';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule
   ],
@@ -79,10 +80,19 @@ export class DonationComponent implements OnInit {
   filterReceiptNumber = '';
   includeInactive = false;
 
+  // Autocomplete filtered options and display values
+  filteredDonors: DonorDropdownDTO[] = [];
+  filteredBranches: BranchDropdownDTO[] = [];
+  donorInputValue = '';
+  branchInputValue = '';
+  selectedDonor: DonorDropdownDTO | null = null;
+  selectedBranch: BranchDropdownDTO | null = null;
+  isSelectingDonor = false;
+  isSelectingBranch = false;
+
   // Master data for dialog
-  paymentModes: PaymentModeDTO[] = [];
-  purposes: DonationPurposeDTO[] = [];
-  events: EventDTO[] = [];
+  paymentModes: PaymentModeDropdownDTO[] = [];
+  purposes: DonationPurposeDropdownDTO[] = [];
   branches: BranchDropdownDTO[] = [];
   donors: DonorDropdownDTO[] = [];
   isLoadingMasterData = false;
@@ -93,7 +103,6 @@ export class DonationComponent implements OnInit {
     private dialog: MatDialog,
     private paymentModeService: PaymentModeService,
     private purposeService: DonationPurposeService,
-    private eventService: EventService,
     private branchService: BranchService
   ) {}
 
@@ -111,32 +120,100 @@ export class DonationComponent implements OnInit {
     this.isLoadingMasterData = true;
 
     Promise.all([
-      this.paymentModeService.getAllPaymentModes().toPromise(),
-      this.purposeService.getAllDonationPurposes().toPromise(),
-      this.eventService.getAllEvents().toPromise(),
+      this.paymentModeService.getAllPaymentModesForDropdown().toPromise(),
+      this.purposeService.getAllDonationPurposesForDropdown().toPromise(),
       this.branchService.getAllBranchesForDropdown().toPromise(),
       this.donationService.getAllActiveDonorNames().toPromise()
-    ]).then(([paymentModesRes, purposesRes, eventsRes, branchesRes, donorsRes]) => {
+    ]).then(([paymentModesRes, purposesRes, branchesRes, donorsRes]) => {
       if (paymentModesRes?.status === 'success' && paymentModesRes.data) {
         this.paymentModes = paymentModesRes.data;
       }
       if (purposesRes?.status === 'success' && purposesRes.data) {
         this.purposes = purposesRes.data;
       }
-      if (eventsRes?.status === 'success' && eventsRes.data) {
-        this.events = eventsRes.data;
+      if (donorsRes?.status === 'success' && donorsRes.data) {
+        this.donors = donorsRes.data;
+        this.filteredDonors = this.donors;
       }
       if (branchesRes?.status === 'success' && branchesRes.data) {
         this.branches = branchesRes.data;
-      }
-      if (donorsRes?.status === 'success' && donorsRes.data) {
-        this.donors = donorsRes.data;
+        this.filteredBranches = this.branches;
       }
       this.isLoadingMasterData = false;
     }).catch(error => {
       console.error('Error loading master data:', error);
       this.isLoadingMasterData = false;
     });
+  }
+
+  filterDonors(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingDonor) {
+      return;
+    }
+    this.donorInputValue = value || '';
+    this.selectedDonor = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredDonors = this.donors.filter(donor => 
+      donor.name.toLowerCase().includes(filterValue)
+    );
+  }
+
+  filterBranches(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingBranch) {
+      return;
+    }
+    this.branchInputValue = value || '';
+    this.selectedBranch = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredBranches = this.branches.filter(branch => 
+      branch.name.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onDonorSelected(donor: DonorDropdownDTO | null): void {
+    this.isSelectingDonor = true;
+    this.selectedDonor = donor;
+    if (donor) {
+      this.filterDonorName = donor.name;
+      this.donorInputValue = donor.name;
+    } else {
+      this.filterDonorName = undefined;
+      this.donorInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredDonors = this.donors;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingDonor = false;
+    }, 100);
+  }
+
+  onBranchSelected(branch: BranchDropdownDTO | null): void {
+    this.isSelectingBranch = true;
+    this.selectedBranch = branch;
+    if (branch) {
+      this.filterBranchId = branch.id;
+      this.branchInputValue = branch.name;
+    } else {
+      this.filterBranchId = undefined;
+      this.branchInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredBranches = this.branches;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingBranch = false;
+    }, 100);
+  }
+
+  displayDonorName = (donor: DonorDropdownDTO | null): string => {
+    return donor ? donor.name : '';
+  }
+
+  displayBranchName = (branch: BranchDropdownDTO | null): string => {
+    return branch ? branch.name : '';
   }
 
   private loadDonations(): void {
@@ -200,6 +277,12 @@ export class DonationComponent implements OnInit {
     this.filterPanNumber = '';
     this.filterReceiptNumber = '';
     this.includeInactive = false;
+    this.donorInputValue = '';
+    this.branchInputValue = '';
+    this.selectedDonor = null;
+    this.selectedBranch = null;
+    this.filteredDonors = this.donors;
+    this.filteredBranches = this.branches;
     this.pageIndex = 0;
     this.loadDonations();
   }
@@ -214,7 +297,6 @@ export class DonationComponent implements OnInit {
         donation: undefined,
         paymentModes: this.paymentModes,
         purposes: this.purposes,
-        events: this.events,
         branches: this.branches
       }
     });
@@ -247,7 +329,6 @@ export class DonationComponent implements OnInit {
         donation,
         paymentModes: this.paymentModes,
         purposes: this.purposes,
-        events: this.events,
         branches: this.branches
       }
     });

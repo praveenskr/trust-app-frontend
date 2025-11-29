@@ -33,6 +33,12 @@ export interface EventUpdateDTO {
   isActive?: boolean;
 }
 
+export interface EventDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+
 export const EVENT_STATUSES = [
   { value: 'PLANNED', label: 'Planned' },
   { value: 'ACTIVE', label: 'Active' },

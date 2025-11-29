@@ -8,7 +8,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DonationSubCategoryService } from '../../services/donation-sub-category.service';
+import { DonationPurposeService } from '../../services/donation-purpose.service';
 import { DonationSubCategoryCreateDTO, DonationSubCategoryDTO, DonationSubCategoryUpdateDTO } from '../../models/donation-sub-category.model';
+import { DonationPurposeDropdownDTO } from '../../models/donation-purpose.model';
 import { DonationSubCategoryDialogComponent } from './donation-sub-category-dialog/donation-sub-category-dialog.component';
 import { DonationSubCategoryDeleteDialogComponent } from './donation-sub-category-delete-dialog/donation-sub-category-delete-dialog.component';
 
@@ -33,15 +35,35 @@ export class DonationSubCategoryComponent implements OnInit {
   displayedColumns: string[] = ['code', 'name', 'description', 'displayOrder', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  donationPurposes: DonationPurposeDropdownDTO[] = [];
+  isLoadingPurposes = false;
 
   constructor(
     private donationSubCategoryService: DonationSubCategoryService,
+    private donationPurposeService: DonationPurposeService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.loadDonationPurposes();
     this.loadDonationSubCategories();
+  }
+
+  private loadDonationPurposes(): void {
+    this.isLoadingPurposes = true;
+    this.donationPurposeService.getAllDonationPurposesForDropdown().subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.donationPurposes = response.data;
+        }
+        this.isLoadingPurposes = false;
+      },
+      error: (error) => {
+        console.error('Error loading donation purposes:', error);
+        this.isLoadingPurposes = false;
+      }
+    });
   }
 
   private loadDonationSubCategories(): void {
@@ -68,7 +90,11 @@ export class DonationSubCategoryComponent implements OnInit {
       width: '650px',
       maxWidth: '90vw',
       disableClose: true,
-      autoFocus: true
+      autoFocus: true,
+      data: {
+        donationSubCategory: undefined,
+        donationPurposes: this.donationPurposes
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -95,7 +121,10 @@ export class DonationSubCategoryComponent implements OnInit {
       maxWidth: '90vw',
       disableClose: true,
       autoFocus: true,
-      data: { donationSubCategory }
+      data: {
+        donationSubCategory,
+        donationPurposes: this.donationPurposes
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

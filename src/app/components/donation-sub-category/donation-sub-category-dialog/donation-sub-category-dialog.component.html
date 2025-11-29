@@ -16,7 +16,6 @@
                 {{ purpose.name }} ({{ purpose.code }})
               </mat-option>
             </mat-select>
-            <div *ngIf="isLoadingPurposes" class="input-hint">Loading purposes...</div>
             <mat-error *ngIf="isFieldInvalid('purposeId')">
               {{ getErrorMessage('purposeId') }}
             </mat-error>

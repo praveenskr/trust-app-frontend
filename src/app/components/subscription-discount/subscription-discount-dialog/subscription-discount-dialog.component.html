@@ -16,7 +16,6 @@
                 {{ plan.name }} ({{ plan.code }})
               </mat-option>
             </mat-select>
-            <div *ngIf="isLoadingPlans" class="input-hint">Loading plans...</div>
             <mat-error *ngIf="isFieldInvalid('planId')">
               {{ getErrorMessage('planId') }}
             </mat-error>

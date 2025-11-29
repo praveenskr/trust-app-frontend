@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { DonationSubCategoryDTO, DonationSubCategoryCreateDTO, DonationSubCategoryUpdateDTO } from '../models/donation-sub-category.model';
+import { DonationSubCategoryDTO, DonationSubCategoryCreateDTO, DonationSubCategoryUpdateDTO, DonationSubCategoryDropdownDTO } from '../models/donation-sub-category.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -59,6 +59,14 @@ export class DonationSubCategoryService {
     
     const params = new HttpParams().set('deletedBy', deletedBy.toString());
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`, { params });
+  }
+
+  getAllDonationSubCategoriesForDropdown(purposeId?: number): Observable<ApiResponse<DonationSubCategoryDropdownDTO[]>> {
+    let params = new HttpParams();
+    if (purposeId) {
+      params = params.set('purposeId', purposeId.toString());
+    }
+    return this.http.get<ApiResponse<DonationSubCategoryDropdownDTO[]>>(`${this.apiUrl}/dropdown`, { params });
   }
 }
 

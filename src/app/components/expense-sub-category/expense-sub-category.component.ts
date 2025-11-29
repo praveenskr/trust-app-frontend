@@ -8,7 +8,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ExpenseSubCategoryService } from '../../services/expense-sub-category.service';
+import { ExpenseCategoryService } from '../../services/expense-category.service';
 import { ExpenseSubCategoryCreateDTO, ExpenseSubCategoryDTO, ExpenseSubCategoryUpdateDTO } from '../../models/expense-sub-category.model';
+import { ExpenseCategoryDropdownDTO } from '../../models/expense-category.model';
 import { ExpenseSubCategoryDialogComponent } from './expense-sub-category-dialog/expense-sub-category-dialog.component';
 import { ExpenseSubCategoryDeleteDialogComponent } from './expense-sub-category-delete-dialog/expense-sub-category-delete-dialog.component';
 
@@ -33,15 +35,35 @@ export class ExpenseSubCategoryComponent implements OnInit {
   displayedColumns: string[] = ['code', 'name', 'description', 'displayOrder', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  expenseCategories: ExpenseCategoryDropdownDTO[] = [];
+  isLoadingCategories = false;
 
   constructor(
     private expenseSubCategoryService: ExpenseSubCategoryService,
+    private expenseCategoryService: ExpenseCategoryService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.loadExpenseCategories();
     this.loadExpenseSubCategories();
+  }
+
+  private loadExpenseCategories(): void {
+    this.isLoadingCategories = true;
+    this.expenseCategoryService.getAllExpenseCategoriesForDropdown().subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.expenseCategories = response.data;
+        }
+        this.isLoadingCategories = false;
+      },
+      error: (error) => {
+        console.error('Error loading expense categories:', error);
+        this.isLoadingCategories = false;
+      }
+    });
   }
 
   private loadExpenseSubCategories(): void {
@@ -68,7 +90,11 @@ export class ExpenseSubCategoryComponent implements OnInit {
       width: '650px',
       maxWidth: '90vw',
       disableClose: true,
-      autoFocus: true
+      autoFocus: true,
+      data: {
+        expenseSubCategory: undefined,
+        expenseCategories: this.expenseCategories
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -95,7 +121,10 @@ export class ExpenseSubCategoryComponent implements OnInit {
       maxWidth: '90vw',
       disableClose: true,
       autoFocus: true,
-      data: { expenseSubCategory }
+      data: {
+        expenseSubCategory,
+        expenseCategories: this.expenseCategories
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

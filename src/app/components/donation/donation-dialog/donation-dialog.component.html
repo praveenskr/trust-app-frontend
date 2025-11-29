@@ -143,22 +143,22 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label for="paymentModeId" class="input-label">Payment Mode <span class="text-red-500">*</span></label>
-            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-              <mat-select formControlName="paymentModeId" required>
-                <mat-option [value]="null">Select Payment Mode</mat-option>
-                <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">
-                  {{ mode.name }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="isFieldInvalid('paymentModeId')">
-                {{ getErrorMessage('paymentModeId') }}
-              </mat-error>
-            </mat-form-field>
-          </div>
+        <div>
+          <label for="paymentModeId" class="input-label">Payment Mode <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select formControlName="paymentModeId" required>
+              <mat-option [value]="null">Select Payment Mode</mat-option>
+              <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">
+                {{ mode.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('paymentModeId')">
+              {{ getErrorMessage('paymentModeId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label for="purposeId" class="input-label">Purpose <span class="text-red-500">*</span></label>
             <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
@@ -173,13 +173,11 @@
               </mat-error>
             </mat-form-field>
           </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label for="subCategoryId" class="input-label">Sub Category</label>
             <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-              <mat-select formControlName="subCategoryId">
+              <mat-select formControlName="subCategoryId" [disabled]="!donationForm.get('purposeId')?.value">
                 <mat-option [value]="null">None</mat-option>
                 <mat-option *ngFor="let subCat of subCategories" [value]="subCat.id">
                   {{ subCat.name }}
@@ -187,11 +185,28 @@
               </mat-select>
             </mat-form-field>
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="branchId" class="input-label">Branch <span class="text-red-500">*</span></label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <mat-select formControlName="branchId" required>
+                <mat-option [value]="null">Select Branch</mat-option>
+                <mat-option *ngFor="let branch of branches" [value]="branch.id">
+                  {{ branch.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isFieldInvalid('branchId')">
+                {{ getErrorMessage('branchId') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
 
           <div>
             <label for="eventId" class="input-label">Event</label>
             <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-              <mat-select formControlName="eventId">
+              <mat-select formControlName="eventId" [disabled]="!donationForm.get('branchId')?.value">
                 <mat-option [value]="null">None</mat-option>
                 <mat-option *ngFor="let event of events" [value]="event.id">
                   {{ event.name }}
@@ -199,21 +214,6 @@
               </mat-select>
             </mat-form-field>
           </div>
-        </div>
-
-        <div>
-          <label for="branchId" class="input-label">Branch <span class="text-red-500">*</span></label>
-          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select formControlName="branchId" required>
-              <mat-option [value]="null">Select Branch</mat-option>
-              <mat-option *ngFor="let branch of branches" [value]="branch.id">
-                {{ branch.name }}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="isFieldInvalid('branchId')">
-              {{ getErrorMessage('branchId') }}
-            </mat-error>
-          </mat-form-field>
         </div>
 
         <div>

@@ -31,6 +31,12 @@ export interface SubscriptionPlanUpdateDTO {
   isActive?: boolean;
 }
 
+export interface SubscriptionPlanDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+
 export const PLAN_TYPES = [
   { value: 'MONTHLY', label: 'Monthly' },
   { value: 'QUARTERLY', label: 'Quarterly' },

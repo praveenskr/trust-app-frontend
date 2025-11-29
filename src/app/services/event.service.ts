@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { EventDTO, EventCreateDTO, EventUpdateDTO } from '../models/event.model';
+import { EventDTO, EventCreateDTO, EventUpdateDTO, EventDropdownDTO } from '../models/event.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -62,6 +62,14 @@ export class EventService {
     
     const params = new HttpParams().set('deletedBy', deletedBy.toString());
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`, { params });
+  }
+
+  getAllEventsForDropdown(branchId?: number): Observable<ApiResponse<EventDropdownDTO[]>> {
+    let params = new HttpParams();
+    if (branchId) {
+      params = params.set('branchId', branchId.toString());
+    }
+    return this.http.get<ApiResponse<EventDropdownDTO[]>>(`${this.apiUrl}/dropdown`, { params });
   }
 }
 

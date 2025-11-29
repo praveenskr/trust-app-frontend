@@ -16,7 +16,6 @@
                 {{ category.name }} ({{ category.code }})
               </mat-option>
             </mat-select>
-            <div *ngIf="isLoadingCategories" class="input-hint">Loading categories...</div>
             <mat-error *ngIf="isFieldInvalid('categoryId')">
               {{ getErrorMessage('categoryId') }}
             </mat-error>

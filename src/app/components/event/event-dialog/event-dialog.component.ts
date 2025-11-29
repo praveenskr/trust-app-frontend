@@ -9,7 +9,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../../models/event.model';
-import { BranchService } from '../../../services/branch.service';
 import { BranchDropdownDTO } from '../../../models/branch.model';
 
 @Component({
@@ -36,39 +35,25 @@ export class EventDialogComponent implements OnInit {
   isEditMode = false;
   eventId?: number;
   branches: BranchDropdownDTO[] = [];
-  isLoadingBranches = false;
   eventStatuses = EVENT_STATUSES;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EventDialogComponent>,
-    private branchService: BranchService,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data?: { event: EventDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      event?: EventDTO;
+      branches?: BranchDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.event;
     this.eventId = data?.event?.id;
+    this.branches = data?.branches || [];
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadBranches();
-  }
-
-  private loadBranches(): void {
-    this.isLoadingBranches = true;
-    this.branchService.getAllBranchesForDropdown().subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.branches = response.data;
-        }
-        this.isLoadingBranches = false;
-      },
-      error: (error) => {
-        console.error('Error loading branches:', error);
-        this.isLoadingBranches = false;
-      }
-    });
+    // Branches are now loaded in parent and passed via data
   }
 
   private initializeForm(): void {

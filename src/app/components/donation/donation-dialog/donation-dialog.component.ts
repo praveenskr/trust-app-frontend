@@ -10,10 +10,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { DonationDTO, DonationCreateDTO, DonationUpdateDTO } from '../../../models/donation.model';
 import { DonationSubCategoryService } from '../../../services/donation-sub-category.service';
-import { PaymentModeDTO } from '../../../models/payment-mode.model';
-import { DonationPurposeDTO } from '../../../models/donation-purpose.model';
-import { DonationSubCategoryDTO } from '../../../models/donation-sub-category.model';
-import { EventDTO } from '../../../models/event.model';
+import { EventService } from '../../../services/event.service';
+import { PaymentModeDropdownDTO } from '../../../models/payment-mode.model';
+import { DonationPurposeDropdownDTO } from '../../../models/donation-purpose.model';
+import { DonationSubCategoryDropdownDTO } from '../../../models/donation-sub-category.model';
+import { EventDropdownDTO } from '../../../models/event.model';
 import { BranchDropdownDTO } from '../../../models/branch.model';
 
 @Component({
@@ -41,10 +42,10 @@ export class DonationDialogComponent implements OnInit {
   donationId?: number;
 
   // Master data for dropdowns
-  paymentModes: PaymentModeDTO[] = [];
-  purposes: DonationPurposeDTO[] = [];
-  subCategories: DonationSubCategoryDTO[] = [];
-  events: EventDTO[] = [];
+  paymentModes: PaymentModeDropdownDTO[] = [];
+  purposes: DonationPurposeDropdownDTO[] = [];
+  subCategories: DonationSubCategoryDropdownDTO[] = [];
+  events: EventDropdownDTO[] = [];
   branches: BranchDropdownDTO[] = [];
 
   isLoadingMasterData = false;
@@ -53,11 +54,11 @@ export class DonationDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DonationDialogComponent>,
     private subCategoryService: DonationSubCategoryService,
+    private eventService: EventService,
     @Inject(MAT_DIALOG_DATA) public data?: {
       donation?: DonationDTO;
-      paymentModes?: PaymentModeDTO[];
-      purposes?: DonationPurposeDTO[];
-      events?: EventDTO[];
+      paymentModes?: PaymentModeDropdownDTO[];
+      purposes?: DonationPurposeDropdownDTO[];
       branches?: BranchDropdownDTO[];
     }
   ) {
@@ -104,19 +105,35 @@ export class DonationDialogComponent implements OnInit {
         this.donationForm.patchValue({ subCategoryId: null });
       }
     });
+
+    // Watch branch changes to load events
+    this.donationForm.get('branchId')?.valueChanges.subscribe(branchId => {
+      if (branchId) {
+        this.loadEvents(branchId);
+      } else {
+        this.events = [];
+        this.donationForm.patchValue({ eventId: null });
+      }
+    });
+
+    // Load events if branch is already selected (for edit mode)
+    const branchId = this.donationForm.get('branchId')?.value;
+    if (branchId) {
+      this.loadEvents(branchId);
+    }
   }
 
   private loadMasterData(): void {
     // Load master data from parent component
     this.paymentModes = this.data?.paymentModes || [];
     this.purposes = this.data?.purposes || [];
-    this.events = this.data?.events || [];
     this.branches = this.data?.branches || [];
+    this.events = []; // Events will be loaded when branch is selected
     this.isLoadingMasterData = false;
   }
 
   private loadSubCategories(purposeId: number): void {
-    this.subCategoryService.getAllDonationSubCategories(purposeId).subscribe({
+    this.subCategoryService.getAllDonationSubCategoriesForDropdown(purposeId).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
           this.subCategories = response.data;
@@ -125,6 +142,20 @@ export class DonationDialogComponent implements OnInit {
       error: (error) => {
         console.error('Error loading sub categories:', error);
         this.subCategories = [];
+      }
+    });
+  }
+
+  private loadEvents(branchId: number): void {
+    this.eventService.getAllEventsForDropdown(branchId).subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.events = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading events:', error);
+        this.events = [];
       }
     });
   }

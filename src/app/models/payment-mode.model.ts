@@ -28,3 +28,9 @@ export interface PaymentModeUpdateDTO {
   isActive?: boolean;
 }
 
+export interface PaymentModeDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+

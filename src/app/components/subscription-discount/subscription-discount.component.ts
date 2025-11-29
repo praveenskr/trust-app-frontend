@@ -8,7 +8,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SubscriptionDiscountService } from '../../services/subscription-discount.service';
+import { SubscriptionPlanService } from '../../services/subscription-plan.service';
 import { SubscriptionDiscountCreateDTO, SubscriptionDiscountDTO, SubscriptionDiscountUpdateDTO } from '../../models/subscription-discount.model';
+import { SubscriptionPlanDropdownDTO } from '../../models/subscription-plan.model';
 import { SubscriptionDiscountDialogComponent } from './subscription-discount-dialog/subscription-discount-dialog.component';
 import { SubscriptionDiscountDeleteDialogComponent } from './subscription-discount-delete-dialog/subscription-discount-delete-dialog.component';
 
@@ -34,15 +36,35 @@ export class SubscriptionDiscountComponent implements OnInit {
   displayedColumns: string[] = ['planId', 'discountType', 'discountValue', 'minQuantity', 'maxQuantity', 'validFrom', 'validTo', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  subscriptionPlans: SubscriptionPlanDropdownDTO[] = [];
+  isLoadingPlans = false;
 
   constructor(
     private subscriptionDiscountService: SubscriptionDiscountService,
+    private subscriptionPlanService: SubscriptionPlanService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.loadSubscriptionPlans();
     this.loadSubscriptionDiscounts();
+  }
+
+  private loadSubscriptionPlans(): void {
+    this.isLoadingPlans = true;
+    this.subscriptionPlanService.getAllSubscriptionPlansForDropdown().subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.subscriptionPlans = response.data;
+        }
+        this.isLoadingPlans = false;
+      },
+      error: (error) => {
+        console.error('Error loading subscription plans:', error);
+        this.isLoadingPlans = false;
+      }
+    });
   }
 
   private loadSubscriptionDiscounts(): void {
@@ -69,7 +91,11 @@ export class SubscriptionDiscountComponent implements OnInit {
       width: '750px',
       maxWidth: '90vw',
       disableClose: true,
-      autoFocus: true
+      autoFocus: true,
+      data: {
+        subscriptionDiscount: undefined,
+        subscriptionPlans: this.subscriptionPlans
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -96,7 +122,10 @@ export class SubscriptionDiscountComponent implements OnInit {
       maxWidth: '90vw',
       disableClose: true,
       autoFocus: true,
-      data: { subscriptionDiscount }
+      data: {
+        subscriptionDiscount,
+        subscriptionPlans: this.subscriptionPlans
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

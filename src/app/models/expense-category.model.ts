@@ -24,3 +24,9 @@ export interface ExpenseCategoryUpdateDTO {
   isActive?: boolean;
 }
 
+export interface ExpenseCategoryDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+

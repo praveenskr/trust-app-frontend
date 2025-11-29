@@ -6,8 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DonationSubCategoryCreateDTO, DonationSubCategoryDTO, DonationSubCategoryUpdateDTO } from '../../../models/donation-sub-category.model';
-import { DonationPurposeService } from '../../../services/donation-purpose.service';
-import { DonationPurposeDTO } from '../../../models/donation-purpose.model';
+import { DonationPurposeDropdownDTO } from '../../../models/donation-purpose.model';
 
 @Component({
   selector: 'app-donation-sub-category-dialog',
@@ -28,38 +27,24 @@ export class DonationSubCategoryDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   donationSubCategoryId?: number;
-  donationPurposes: DonationPurposeDTO[] = [];
-  isLoadingPurposes = false;
+  donationPurposes: DonationPurposeDropdownDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DonationSubCategoryDialogComponent>,
-    private donationPurposeService: DonationPurposeService,
-    @Inject(MAT_DIALOG_DATA) public data?: { donationSubCategory: DonationSubCategoryDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      donationSubCategory?: DonationSubCategoryDTO;
+      donationPurposes?: DonationPurposeDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.donationSubCategory;
     this.donationSubCategoryId = data?.donationSubCategory?.id;
+    this.donationPurposes = data?.donationPurposes || [];
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadDonationPurposes();
-  }
-
-  private loadDonationPurposes(): void {
-    this.isLoadingPurposes = true;
-    this.donationPurposeService.getAllDonationPurposes(false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.donationPurposes = response.data;
-        }
-        this.isLoadingPurposes = false;
-      },
-      error: (error) => {
-        console.error('Error loading donation purposes:', error);
-        this.isLoadingPurposes = false;
-      }
-    });
+    // Donation purposes are now loaded in parent and passed via data
   }
 
   private initializeForm(): void {

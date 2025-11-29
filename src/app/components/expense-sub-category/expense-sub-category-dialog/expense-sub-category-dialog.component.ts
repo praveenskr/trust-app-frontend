@@ -6,8 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ExpenseSubCategoryCreateDTO, ExpenseSubCategoryDTO, ExpenseSubCategoryUpdateDTO } from '../../../models/expense-sub-category.model';
-import { ExpenseCategoryService } from '../../../services/expense-category.service';
-import { ExpenseCategoryDTO } from '../../../models/expense-category.model';
+import { ExpenseCategoryDropdownDTO } from '../../../models/expense-category.model';
 
 @Component({
   selector: 'app-expense-sub-category-dialog',
@@ -28,38 +27,24 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   expenseSubCategoryId?: number;
-  expenseCategories: ExpenseCategoryDTO[] = [];
-  isLoadingCategories = false;
+  expenseCategories: ExpenseCategoryDropdownDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ExpenseSubCategoryDialogComponent>,
-    private expenseCategoryService: ExpenseCategoryService,
-    @Inject(MAT_DIALOG_DATA) public data?: { expenseSubCategory: ExpenseSubCategoryDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      expenseSubCategory?: ExpenseSubCategoryDTO;
+      expenseCategories?: ExpenseCategoryDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.expenseSubCategory;
     this.expenseSubCategoryId = data?.expenseSubCategory?.id;
+    this.expenseCategories = data?.expenseCategories || [];
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadExpenseCategories();
-  }
-
-  private loadExpenseCategories(): void {
-    this.isLoadingCategories = true;
-    this.expenseCategoryService.getAllExpenseCategories(false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.expenseCategories = response.data;
-        }
-        this.isLoadingCategories = false;
-      },
-      error: (error) => {
-        console.error('Error loading expense categories:', error);
-        this.isLoadingCategories = false;
-      }
-    });
+    // Expense categories are now loaded in parent and passed via data
   }
 
   private initializeForm(): void {

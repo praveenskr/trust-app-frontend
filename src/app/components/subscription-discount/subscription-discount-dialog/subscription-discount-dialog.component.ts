@@ -9,8 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { SubscriptionDiscountCreateDTO, SubscriptionDiscountDTO, SubscriptionDiscountUpdateDTO, DISCOUNT_TYPES } from '../../../models/subscription-discount.model';
-import { SubscriptionPlanService } from '../../../services/subscription-plan.service';
-import { SubscriptionPlanDTO } from '../../../models/subscription-plan.model';
+import { SubscriptionPlanDropdownDTO } from '../../../models/subscription-plan.model';
 
 @Component({
   selector: 'app-subscription-discount-dialog',
@@ -35,40 +34,26 @@ export class SubscriptionDiscountDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   subscriptionDiscountId?: number;
-  subscriptionPlans: SubscriptionPlanDTO[] = [];
-  isLoadingPlans = false;
+  subscriptionPlans: SubscriptionPlanDropdownDTO[] = [];
   discountTypes = DISCOUNT_TYPES;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<SubscriptionDiscountDialogComponent>,
-    private subscriptionPlanService: SubscriptionPlanService,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data?: { subscriptionDiscount: SubscriptionDiscountDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      subscriptionDiscount?: SubscriptionDiscountDTO;
+      subscriptionPlans?: SubscriptionPlanDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.subscriptionDiscount;
     this.subscriptionDiscountId = data?.subscriptionDiscount?.id;
+    this.subscriptionPlans = data?.subscriptionPlans || [];
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadSubscriptionPlans();
-  }
-
-  private loadSubscriptionPlans(): void {
-    this.isLoadingPlans = true;
-    this.subscriptionPlanService.getAllSubscriptionPlans(undefined, false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.subscriptionPlans = response.data;
-        }
-        this.isLoadingPlans = false;
-      },
-      error: (error) => {
-        console.error('Error loading subscription plans:', error);
-        this.isLoadingPlans = false;
-      }
-    });
+    // Subscription plans are now loaded in parent and passed via data
   }
 
   private initializeForm(): void {

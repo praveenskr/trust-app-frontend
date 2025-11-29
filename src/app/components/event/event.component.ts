@@ -8,7 +8,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EventService } from '../../services/event.service';
+import { BranchService } from '../../services/branch.service';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../models/event.model';
+import { BranchDropdownDTO } from '../../models/branch.model';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { EventDeleteDialogComponent } from './event-delete-dialog/event-delete-dialog.component';
 
@@ -33,15 +35,35 @@ export class EventComponent implements OnInit {
   displayedColumns: string[] = ['code', 'name', 'startDate', 'endDate', 'status', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  branches: BranchDropdownDTO[] = [];
+  isLoadingBranches = false;
 
   constructor(
     private eventService: EventService,
+    private branchService: BranchService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.loadBranches();
     this.loadEvents();
+  }
+
+  private loadBranches(): void {
+    this.isLoadingBranches = true;
+    this.branchService.getAllBranchesForDropdown().subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.branches = response.data;
+        }
+        this.isLoadingBranches = false;
+      },
+      error: (error) => {
+        console.error('Error loading branches:', error);
+        this.isLoadingBranches = false;
+      }
+    });
   }
 
   private loadEvents(): void {
@@ -68,7 +90,11 @@ export class EventComponent implements OnInit {
       width: '750px',
       maxWidth: '90vw',
       disableClose: true,
-      autoFocus: true
+      autoFocus: true,
+      data: {
+        event: undefined,
+        branches: this.branches
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -95,7 +121,10 @@ export class EventComponent implements OnInit {
       maxWidth: '90vw',
       disableClose: true,
       autoFocus: true,
-      data: { event }
+      data: {
+        event,
+        branches: this.branches
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

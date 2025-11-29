@@ -9,17 +9,25 @@
         <div>
           <label for="filterDonorName" class="input-label">Donor Name</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select
+            <input
+              matInput
               id="filterDonorName"
-              [(ngModel)]="filterDonorName"
-              placeholder="All Donors">
-              <mat-option [value]="undefined">All Donors</mat-option>
+              type="text"
+              [value]="donorInputValue"
+              (input)="filterDonors($any($event.target).value)"
+              placeholder="Type to search or select donor"
+              [matAutocomplete]="donorAuto">
+            <mat-autocomplete
+              #donorAuto="matAutocomplete"
+              (optionSelected)="onDonorSelected($event.option.value)"
+              [displayWith]="displayDonorName">
+              <mat-option [value]="null">All Donors</mat-option>
               <mat-option
-                *ngFor="let donor of donors"
-                [value]="donor.name">
+                *ngFor="let donor of filteredDonors"
+                [value]="donor">
                 {{ donor.name }}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
 
@@ -64,17 +72,25 @@
         <div>
           <label for="filterBranchId" class="input-label">Branch</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select
+            <input
+              matInput
               id="filterBranchId"
-              [(ngModel)]="filterBranchId"
-              placeholder="All Branches">
-              <mat-option [value]="undefined">All Branches</mat-option>
+              type="text"
+              [value]="branchInputValue"
+              (input)="filterBranches($any($event.target).value)"
+              placeholder="Type to search or select branch"
+              [matAutocomplete]="branchAuto">
+            <mat-autocomplete
+              #branchAuto="matAutocomplete"
+              (optionSelected)="onBranchSelected($event.option.value)"
+              [displayWith]="displayBranchName">
+              <mat-option [value]="null">All Branches</mat-option>
               <mat-option
-                *ngFor="let branch of branches"
-                [value]="branch.id">
+                *ngFor="let branch of filteredBranches"
+                [value]="branch">
                 {{ branch.name }}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
       </div>
