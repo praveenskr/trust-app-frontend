@@ -7,6 +7,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 import { EventService } from '../../services/event.service';
 import { BranchService } from '../../services/branch.service';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../models/event.model';
@@ -19,14 +26,22 @@ import { EventDeleteDialogComponent } from './event-delete-dialog/event-delete-d
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
@@ -37,6 +52,21 @@ export class EventComponent implements OnInit {
   isLoading = false;
   branches: BranchDropdownDTO[] = [];
   isLoadingBranches = false;
+  EVENT_STATUSES = EVENT_STATUSES;
+
+  // Pagination
+  totalElements = 0;
+  pageSize = 20;
+  pageIndex = 0;
+  pageSizeOptions = [10, 20, 50, 100];
+
+  // Filters
+  filterBranchId?: number;
+  filterStatus?: string;
+  filterFromDate?: Date;
+  filterToDate?: Date;
+  filterSearch?: string;
+  includeInactive = false;
 
   constructor(
     private eventService: EventService,
@@ -68,10 +98,26 @@ export class EventComponent implements OnInit {
 
   private loadEvents(): void {
     this.isLoading = true;
-    this.eventService.getAllEvents(undefined, undefined, false).subscribe({
+
+    const fromDate = this.filterFromDate ? this.formatDate(this.filterFromDate) : undefined;
+    const toDate = this.filterToDate ? this.formatDate(this.filterToDate) : undefined;
+
+    this.eventService.getAllEvents(
+      this.filterBranchId,
+      this.filterStatus,
+      this.includeInactive,
+      fromDate,
+      toDate,
+      this.filterSearch,
+      this.pageIndex,
+      this.pageSize,
+      'startDate',
+      'DESC'
+    ).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
-          this.events = response.data;
+          this.events = response.data.content;
+          this.totalElements = response.data.totalElements;
         }
         this.isLoading = false;
       },
@@ -83,6 +129,28 @@ export class EventComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadEvents();
+  }
+
+  applyFilters(): void {
+    this.pageIndex = 0;
+    this.loadEvents();
+  }
+
+  clearFilters(): void {
+    this.filterBranchId = undefined;
+    this.filterStatus = undefined;
+    this.filterFromDate = undefined;
+    this.filterToDate = undefined;
+    this.filterSearch = undefined;
+    this.includeInactive = false;
+    this.pageIndex = 0;
+    this.loadEvents();
   }
 
   openAddDialog(): void {
@@ -285,6 +353,13 @@ export class EventComponent implements OnInit {
       'CANCELLED': 'status-cancelled'
     };
     return statusClasses[status] || '';
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
 

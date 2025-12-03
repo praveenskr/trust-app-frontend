@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { EventDTO, EventCreateDTO, EventUpdateDTO, EventDropdownDTO } from '../models/event.model';
+import { EventDTO, EventCreateDTO, EventUpdateDTO, EventDropdownDTO, PageResponse } from '../models/event.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -17,15 +17,32 @@ export class EventService {
     private authService: AuthService
   ) { }
 
-  getAllEvents(branchId?: number, status?: string, includeInactive: boolean = false): Observable<ApiResponse<EventDTO[]>> {
-    let params = new HttpParams().set('includeInactive', includeInactive.toString());
-    if (branchId) {
-      params = params.set('branchId', branchId.toString());
-    }
-    if (status) {
-      params = params.set('status', status);
-    }
-    return this.http.get<ApiResponse<EventDTO[]>>(this.apiUrl, { params });
+  getAllEvents(
+    branchId?: number,
+    status?: string,
+    includeInactive: boolean = false,
+    fromDate?: string,
+    toDate?: string,
+    search?: string,
+    page: number = 0,
+    size: number = 20,
+    sortBy: string = 'startDate',
+    sortDir: string = 'DESC'
+  ): Observable<ApiResponse<PageResponse<EventDTO>>> {
+    let params = new HttpParams()
+      .set('includeInactive', includeInactive.toString())
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir);
+
+    if (branchId) params = params.set('branchId', branchId.toString());
+    if (status) params = params.set('status', status);
+    if (fromDate) params = params.set('fromDate', fromDate);
+    if (toDate) params = params.set('toDate', toDate);
+    if (search) params = params.set('search', search);
+
+    return this.http.get<ApiResponse<PageResponse<EventDTO>>>(this.apiUrl, { params });
   }
 
   getEventById(id: number): Observable<ApiResponse<EventDTO>> {
