@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ExpenseSubCategoryCreateDTO, ExpenseSubCategoryDTO, ExpenseSubCategoryUpdateDTO } from '../../../models/expense-sub-category.model';
 import { ExpenseCategoryDropdownDTO } from '../../../models/expense-category.model';
 
@@ -17,7 +19,9 @@ import { ExpenseCategoryDropdownDTO } from '../../../models/expense-category.mod
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   templateUrl: './expense-sub-category-dialog.component.html',
   styleUrls: ['./expense-sub-category-dialog.component.css']
@@ -28,6 +32,10 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
   isEditMode = false;
   expenseSubCategoryId?: number;
   expenseCategories: ExpenseCategoryDropdownDTO[] = [];
+  filteredCategories: ExpenseCategoryDropdownDTO[] = [];
+  categoryInputValue = '';
+  selectedCategory: ExpenseCategoryDropdownDTO | null = null;
+  isSelectingCategory = false;
 
   constructor(
     private fb: FormBuilder,
@@ -40,11 +48,20 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
     this.isEditMode = !!data?.expenseSubCategory;
     this.expenseSubCategoryId = data?.expenseSubCategory?.id;
     this.expenseCategories = data?.expenseCategories || [];
+    this.filteredCategories = this.expenseCategories;
     this.initializeForm();
   }
 
   ngOnInit(): void {
     // Expense categories are now loaded in parent and passed via data
+    // Set initial category input value if editing
+    if (this.isEditMode && this.data?.expenseSubCategory?.categoryId) {
+      const category = this.expenseCategories.find(c => c.id === this.data?.expenseSubCategory?.categoryId);
+      if (category) {
+        this.selectedCategory = category;
+        this.categoryInputValue = `${category.name} (${category.code})`;
+      }
+    }
   }
 
   private initializeForm(): void {
@@ -58,6 +75,52 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
       displayOrder: [expenseSubCategory?.displayOrder || null],
       isActive: [expenseSubCategory?.isActive !== undefined ? expenseSubCategory.isActive : true]
     });
+
+    // Set category input value if category is already selected (for edit mode)
+    const categoryId = this.expenseSubCategoryForm.get('categoryId')?.value;
+    if (categoryId && this.expenseCategories.length > 0) {
+      const category = this.expenseCategories.find(c => c.id === categoryId);
+      if (category) {
+        this.selectedCategory = category;
+        this.categoryInputValue = `${category.name} (${category.code})`;
+      }
+    }
+  }
+
+  filterCategories(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingCategory) {
+      return;
+    }
+    this.categoryInputValue = value || '';
+    this.selectedCategory = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredCategories = this.expenseCategories.filter(category => 
+      category.name.toLowerCase().includes(filterValue) || 
+      category.code.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onCategorySelected(category: ExpenseCategoryDropdownDTO | null): void {
+    this.isSelectingCategory = true;
+    this.selectedCategory = category;
+    if (category) {
+      this.expenseSubCategoryForm.patchValue({ categoryId: category.id });
+      this.categoryInputValue = `${category.name} (${category.code})`;
+    } else {
+      this.expenseSubCategoryForm.patchValue({ categoryId: null });
+      this.categoryInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredCategories = this.expenseCategories;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingCategory = false;
+    }, 100);
+  }
+
+  displayCategoryName = (category: ExpenseCategoryDropdownDTO | null): string => {
+    return category ? `${category.name} (${category.code})` : '';
   }
 
   onSubmit(): void {

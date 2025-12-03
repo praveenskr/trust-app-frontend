@@ -9,13 +9,29 @@
     <form [formGroup]="donationSubCategoryForm" (ngSubmit)="onSubmit()" class="space-y-6 pt-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="purposeId" class="input-label">Donation Purpose <span class="text-red-500">*</span></label>
+          <label for="purposeId" class="input-label">Donation Purpose <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select formControlName="purposeId" required [disabled]="isEditMode">
-              <mat-option *ngFor="let purpose of donationPurposes" [value]="purpose.id">
+            <input
+              matInput
+              id="purposeId"
+              type="text"
+              [value]="purposeInputValue"
+              (input)="filterPurposes($any($event.target).value)"
+              placeholder="Type to search or select purpose"
+              required
+              [disabled]="isEditMode"
+              [matAutocomplete]="purposeAuto"
+              [class.error]="isFieldInvalid('purposeId')">
+            <mat-autocomplete
+              #purposeAuto="matAutocomplete"
+              (optionSelected)="onPurposeSelected($event.option.value)"
+              [displayWith]="displayPurposeName">
+              <mat-option
+                *ngFor="let purpose of filteredPurposes"
+                [value]="purpose">
                 {{ purpose.name }} ({{ purpose.code }})
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
             <mat-error *ngIf="isFieldInvalid('purposeId')">
               {{ getErrorMessage('purposeId') }}
             </mat-error>
@@ -23,7 +39,7 @@
         </div>
 
         <div>
-          <label for="code" class="input-label">Sub-Category Code <span class="text-red-500">*</span></label>
+          <label for="code" class="input-label">Sub-Category Code <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
           <input 
             id="code"
             type="text" 

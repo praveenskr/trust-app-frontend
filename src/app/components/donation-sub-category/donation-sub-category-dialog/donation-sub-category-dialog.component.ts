@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DonationSubCategoryCreateDTO, DonationSubCategoryDTO, DonationSubCategoryUpdateDTO } from '../../../models/donation-sub-category.model';
 import { DonationPurposeDropdownDTO } from '../../../models/donation-purpose.model';
 
@@ -17,7 +19,9 @@ import { DonationPurposeDropdownDTO } from '../../../models/donation-purpose.mod
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   templateUrl: './donation-sub-category-dialog.component.html',
   styleUrls: ['./donation-sub-category-dialog.component.css']
@@ -28,6 +32,10 @@ export class DonationSubCategoryDialogComponent implements OnInit {
   isEditMode = false;
   donationSubCategoryId?: number;
   donationPurposes: DonationPurposeDropdownDTO[] = [];
+  filteredPurposes: DonationPurposeDropdownDTO[] = [];
+  purposeInputValue = '';
+  selectedPurpose: DonationPurposeDropdownDTO | null = null;
+  isSelectingPurpose = false;
 
   constructor(
     private fb: FormBuilder,
@@ -40,11 +48,20 @@ export class DonationSubCategoryDialogComponent implements OnInit {
     this.isEditMode = !!data?.donationSubCategory;
     this.donationSubCategoryId = data?.donationSubCategory?.id;
     this.donationPurposes = data?.donationPurposes || [];
+    this.filteredPurposes = this.donationPurposes;
     this.initializeForm();
   }
 
   ngOnInit(): void {
     // Donation purposes are now loaded in parent and passed via data
+    // Set initial purpose input value if editing
+    if (this.isEditMode && this.data?.donationSubCategory?.purposeId) {
+      const purpose = this.donationPurposes.find(p => p.id === this.data?.donationSubCategory?.purposeId);
+      if (purpose) {
+        this.selectedPurpose = purpose;
+        this.purposeInputValue = `${purpose.name} (${purpose.code})`;
+      }
+    }
   }
 
   private initializeForm(): void {
@@ -58,6 +75,52 @@ export class DonationSubCategoryDialogComponent implements OnInit {
       displayOrder: [donationSubCategory?.displayOrder || null],
       isActive: [donationSubCategory?.isActive !== undefined ? donationSubCategory.isActive : true]
     });
+
+    // Set purpose input value if purpose is already selected (for edit mode)
+    const purposeId = this.donationSubCategoryForm.get('purposeId')?.value;
+    if (purposeId && this.donationPurposes.length > 0) {
+      const purpose = this.donationPurposes.find(p => p.id === purposeId);
+      if (purpose) {
+        this.selectedPurpose = purpose;
+        this.purposeInputValue = `${purpose.name} (${purpose.code})`;
+      }
+    }
+  }
+
+  filterPurposes(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingPurpose) {
+      return;
+    }
+    this.purposeInputValue = value || '';
+    this.selectedPurpose = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredPurposes = this.donationPurposes.filter(purpose => 
+      purpose.name.toLowerCase().includes(filterValue) || 
+      purpose.code.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onPurposeSelected(purpose: DonationPurposeDropdownDTO | null): void {
+    this.isSelectingPurpose = true;
+    this.selectedPurpose = purpose;
+    if (purpose) {
+      this.donationSubCategoryForm.patchValue({ purposeId: purpose.id });
+      this.purposeInputValue = `${purpose.name} (${purpose.code})`;
+    } else {
+      this.donationSubCategoryForm.patchValue({ purposeId: null });
+      this.purposeInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredPurposes = this.donationPurposes;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingPurpose = false;
+    }, 100);
+  }
+
+  displayPurposeName = (purpose: DonationPurposeDropdownDTO | null): string => {
+    return purpose ? `${purpose.name} (${purpose.code})` : '';
   }
 
   onSubmit(): void {

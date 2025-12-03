@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../services/event.service';
 import { BranchService } from '../../services/branch.service';
@@ -38,6 +39,7 @@ import { EventDeleteDialogComponent } from './event-delete-dialog/event-delete-d
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule
   ],
@@ -53,6 +55,12 @@ export class EventComponent implements OnInit {
   branches: BranchDropdownDTO[] = [];
   isLoadingBranches = false;
   EVENT_STATUSES = EVENT_STATUSES;
+
+  // Branch autocomplete
+  filteredBranches: BranchDropdownDTO[] = [];
+  branchInputValue = '';
+  selectedBranch: BranchDropdownDTO | null = null;
+  isSelectingBranch = false;
 
   // Pagination
   totalElements = 0;
@@ -76,6 +84,11 @@ export class EventComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Set default dates to today
+    const today = new Date();
+    this.filterFromDate = today;
+    this.filterToDate = today;
+    
     this.loadBranches();
     this.loadEvents();
   }
@@ -86,6 +99,7 @@ export class EventComponent implements OnInit {
       next: (response) => {
         if (response.status === 'success' && response.data) {
           this.branches = response.data;
+          this.filteredBranches = this.branches;
         }
         this.isLoadingBranches = false;
       },
@@ -144,6 +158,9 @@ export class EventComponent implements OnInit {
 
   clearFilters(): void {
     this.filterBranchId = undefined;
+    this.selectedBranch = null;
+    this.branchInputValue = '';
+    this.filteredBranches = this.branches;
     this.filterStatus = undefined;
     this.filterFromDate = undefined;
     this.filterToDate = undefined;
@@ -360,6 +377,37 @@ export class EventComponent implements OnInit {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  // Autocomplete helpers for branch filter
+  filterBranches(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingBranch) {
+      return;
+    }
+    this.branchInputValue = value || '';
+    this.selectedBranch = null;
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredBranches = this.branches.filter(branch =>
+      branch.name.toLowerCase().includes(filterValue)
+    );
+    this.filterBranchId = undefined;
+  }
+
+  onBranchSelected(branch: BranchDropdownDTO | null): void {
+    this.isSelectingBranch = true;
+    this.selectedBranch = branch;
+    if (branch) {
+      this.filterBranchId = branch.id;
+      this.branchInputValue = branch.name;
+    } else {
+      this.filterBranchId = undefined;
+      this.branchInputValue = '';
+    }
+    this.filteredBranches = this.branches;
+    setTimeout(() => {
+      this.isSelectingBranch = false;
+    }, 100);
   }
 }
 

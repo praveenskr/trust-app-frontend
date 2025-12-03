@@ -10,15 +10,24 @@
         <div>
           <label for="filterBranchId" class="input-label">Branch</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <mat-select
+            <input
+              matInput
               id="filterBranchId"
-              [(ngModel)]="filterBranchId"
-              placeholder="Select branch">
-              <mat-option [value]="undefined">All Branches</mat-option>
-              <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              type="text"
+              [value]="branchInputValue"
+              (input)="filterBranches($any($event.target).value)"
+              placeholder="Type to search or select branch"
+              [matAutocomplete]="branchAuto">
+            <mat-autocomplete
+              #branchAuto="matAutocomplete"
+              (optionSelected)="onBranchSelected($event.option.value)">
+              <mat-option [value]="null">All Branches</mat-option>
+              <mat-option
+                *ngFor="let branch of filteredBranches"
+                [value]="branch">
                 {{ branch.name }}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
 
@@ -53,7 +62,7 @@
         <div>
           <label for="filterFromDate" class="input-label">From Date</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate" id="filterFromDate">
+            <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterFromDate" id="filterFromDate" placeholder="Select from date">
             <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
             <mat-datepicker #fromPicker></mat-datepicker>
           </mat-form-field>
@@ -63,7 +72,7 @@
         <div>
           <label for="filterToDate" class="input-label">To Date</label>
           <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
-            <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate" id="filterToDate">
+            <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterToDate" id="filterToDate" placeholder="Select to date">
             <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
             <mat-datepicker #toPicker></mat-datepicker>
           </mat-form-field>
