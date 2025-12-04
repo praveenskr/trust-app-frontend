@@ -33,10 +33,27 @@ export interface EventUpdateDTO {
   isActive?: boolean;
 }
 
+export interface EventDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+
 export const EVENT_STATUSES = [
   { value: 'PLANNED', label: 'Planned' },
   { value: 'ACTIVE', label: 'Active' },
   { value: 'COMPLETED', label: 'Completed' },
   { value: 'CANCELLED', label: 'Cancelled' }
 ];
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+}
 

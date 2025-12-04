@@ -7,8 +7,18 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule } from '@angular/forms';
 import { EventService } from '../../services/event.service';
+import { BranchService } from '../../services/branch.service';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../models/event.model';
+import { BranchDropdownDTO } from '../../models/branch.model';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { EventDeleteDialogComponent } from './event-delete-dialog/event-delete-dialog.component';
 
@@ -17,14 +27,23 @@ import { EventDeleteDialogComponent } from './event-delete-dialog/event-delete-d
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
@@ -33,23 +52,86 @@ export class EventComponent implements OnInit {
   displayedColumns: string[] = ['code', 'name', 'startDate', 'endDate', 'status', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  branches: BranchDropdownDTO[] = [];
+  isLoadingBranches = false;
+  EVENT_STATUSES = EVENT_STATUSES;
+
+  // Branch autocomplete
+  filteredBranches: BranchDropdownDTO[] = [];
+  branchInputValue = '';
+  selectedBranch: BranchDropdownDTO | null = null;
+  isSelectingBranch = false;
+
+  // Pagination
+  totalElements = 0;
+  pageSize = 20;
+  pageIndex = 0;
+  pageSizeOptions = [10, 20, 50, 100];
+
+  // Filters
+  filterBranchId?: number;
+  filterStatus?: string;
+  filterFromDate?: Date;
+  filterToDate?: Date;
+  filterSearch?: string;
+  includeInactive = false;
 
   constructor(
     private eventService: EventService,
+    private branchService: BranchService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    // Set default dates to today
+    const today = new Date();
+    this.filterFromDate = today;
+    this.filterToDate = today;
+    
+    this.loadBranches();
     this.loadEvents();
+  }
+
+  private loadBranches(): void {
+    this.isLoadingBranches = true;
+    this.branchService.getAllBranchesForDropdown().subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data) {
+          this.branches = response.data;
+          this.filteredBranches = this.branches;
+        }
+        this.isLoadingBranches = false;
+      },
+      error: (error) => {
+        console.error('Error loading branches:', error);
+        this.isLoadingBranches = false;
+      }
+    });
   }
 
   private loadEvents(): void {
     this.isLoading = true;
-    this.eventService.getAllEvents(undefined, undefined, false).subscribe({
+
+    const fromDate = this.filterFromDate ? this.formatDate(this.filterFromDate) : undefined;
+    const toDate = this.filterToDate ? this.formatDate(this.filterToDate) : undefined;
+
+    this.eventService.getAllEvents(
+      this.filterBranchId,
+      this.filterStatus,
+      this.includeInactive,
+      fromDate,
+      toDate,
+      this.filterSearch,
+      this.pageIndex,
+      this.pageSize,
+      'startDate',
+      'DESC'
+    ).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
-          this.events = response.data;
+          this.events = response.data.content;
+          this.totalElements = response.data.totalElements;
         }
         this.isLoading = false;
       },
@@ -63,12 +145,41 @@ export class EventComponent implements OnInit {
     });
   }
 
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadEvents();
+  }
+
+  applyFilters(): void {
+    this.pageIndex = 0;
+    this.loadEvents();
+  }
+
+  clearFilters(): void {
+    this.filterBranchId = undefined;
+    this.selectedBranch = null;
+    this.branchInputValue = '';
+    this.filteredBranches = this.branches;
+    this.filterStatus = undefined;
+    this.filterFromDate = undefined;
+    this.filterToDate = undefined;
+    this.filterSearch = undefined;
+    this.includeInactive = false;
+    this.pageIndex = 0;
+    this.loadEvents();
+  }
+
   openAddDialog(): void {
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
       disableClose: true,
-      autoFocus: true
+      autoFocus: true,
+      data: {
+        event: undefined,
+        branches: this.branches
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -82,23 +193,46 @@ export class EventComponent implements OnInit {
     });
   }
 
-  openEditDialog(event: EventDTO): void {
+  openEditDialog(event: EventDTO, clickEvent?: Event): void {
+    // Blur the button to remove focus state
+    if (clickEvent) {
+      const target = clickEvent.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
       disableClose: true,
       autoFocus: true,
-      data: { event }
+      data: {
+        event,
+        branches: this.branches
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (clickEvent) {
+        const target = clickEvent.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateEvent(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(event: EventDTO): void {
+  openDeleteDialog(event: EventDTO, clickEvent?: Event): void {
+    // Blur the button to remove focus state
+    if (clickEvent) {
+      const target = clickEvent.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(EventDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +240,12 @@ export class EventComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (clickEvent) {
+        const target = clickEvent.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteEvent(event.id);
       }
@@ -230,6 +370,44 @@ export class EventComponent implements OnInit {
       'CANCELLED': 'status-cancelled'
     };
     return statusClasses[status] || '';
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Autocomplete helpers for branch filter
+  filterBranches(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingBranch) {
+      return;
+    }
+    this.branchInputValue = value || '';
+    this.selectedBranch = null;
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredBranches = this.branches.filter(branch =>
+      branch.name.toLowerCase().includes(filterValue)
+    );
+    this.filterBranchId = undefined;
+  }
+
+  onBranchSelected(branch: BranchDropdownDTO | null): void {
+    this.isSelectingBranch = true;
+    this.selectedBranch = branch;
+    if (branch) {
+      this.filterBranchId = branch.id;
+      this.branchInputValue = branch.name;
+    } else {
+      this.filterBranchId = undefined;
+      this.branchInputValue = '';
+    }
+    this.filteredBranches = this.branches;
+    setTimeout(() => {
+      this.isSelectingBranch = false;
+    }, 100);
   }
 }
 

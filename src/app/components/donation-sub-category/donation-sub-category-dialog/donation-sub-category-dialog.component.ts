@@ -2,15 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DonationSubCategoryCreateDTO, DonationSubCategoryDTO, DonationSubCategoryUpdateDTO } from '../../../models/donation-sub-category.model';
-import { DonationPurposeService } from '../../../services/donation-purpose.service';
-import { DonationPurposeDTO } from '../../../models/donation-purpose.model';
+import { DonationPurposeDropdownDTO } from '../../../models/donation-purpose.model';
 
 @Component({
   selector: 'app-donation-sub-category-dialog',
@@ -19,12 +17,11 @@ import { DonationPurposeDTO } from '../../../models/donation-purpose.model';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   templateUrl: './donation-sub-category-dialog.component.html',
   styleUrls: ['./donation-sub-category-dialog.component.css']
@@ -34,38 +31,37 @@ export class DonationSubCategoryDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   donationSubCategoryId?: number;
-  donationPurposes: DonationPurposeDTO[] = [];
-  isLoadingPurposes = false;
+  donationPurposes: DonationPurposeDropdownDTO[] = [];
+  filteredPurposes: DonationPurposeDropdownDTO[] = [];
+  purposeInputValue = '';
+  selectedPurpose: DonationPurposeDropdownDTO | null = null;
+  isSelectingPurpose = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DonationSubCategoryDialogComponent>,
-    private donationPurposeService: DonationPurposeService,
-    @Inject(MAT_DIALOG_DATA) public data?: { donationSubCategory: DonationSubCategoryDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      donationSubCategory?: DonationSubCategoryDTO;
+      donationPurposes?: DonationPurposeDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.donationSubCategory;
     this.donationSubCategoryId = data?.donationSubCategory?.id;
+    this.donationPurposes = data?.donationPurposes || [];
+    this.filteredPurposes = this.donationPurposes;
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadDonationPurposes();
-  }
-
-  private loadDonationPurposes(): void {
-    this.isLoadingPurposes = true;
-    this.donationPurposeService.getAllDonationPurposes(false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.donationPurposes = response.data;
-        }
-        this.isLoadingPurposes = false;
-      },
-      error: (error) => {
-        console.error('Error loading donation purposes:', error);
-        this.isLoadingPurposes = false;
+    // Donation purposes are now loaded in parent and passed via data
+    // Set initial purpose input value if editing
+    if (this.isEditMode && this.data?.donationSubCategory?.purposeId) {
+      const purpose = this.donationPurposes.find(p => p.id === this.data?.donationSubCategory?.purposeId);
+      if (purpose) {
+        this.selectedPurpose = purpose;
+        this.purposeInputValue = `${purpose.name} (${purpose.code})`;
       }
-    });
+    }
   }
 
   private initializeForm(): void {
@@ -79,6 +75,52 @@ export class DonationSubCategoryDialogComponent implements OnInit {
       displayOrder: [donationSubCategory?.displayOrder || null],
       isActive: [donationSubCategory?.isActive !== undefined ? donationSubCategory.isActive : true]
     });
+
+    // Set purpose input value if purpose is already selected (for edit mode)
+    const purposeId = this.donationSubCategoryForm.get('purposeId')?.value;
+    if (purposeId && this.donationPurposes.length > 0) {
+      const purpose = this.donationPurposes.find(p => p.id === purposeId);
+      if (purpose) {
+        this.selectedPurpose = purpose;
+        this.purposeInputValue = `${purpose.name} (${purpose.code})`;
+      }
+    }
+  }
+
+  filterPurposes(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingPurpose) {
+      return;
+    }
+    this.purposeInputValue = value || '';
+    this.selectedPurpose = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredPurposes = this.donationPurposes.filter(purpose => 
+      purpose.name.toLowerCase().includes(filterValue) || 
+      purpose.code.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onPurposeSelected(purpose: DonationPurposeDropdownDTO | null): void {
+    this.isSelectingPurpose = true;
+    this.selectedPurpose = purpose;
+    if (purpose) {
+      this.donationSubCategoryForm.patchValue({ purposeId: purpose.id });
+      this.purposeInputValue = `${purpose.name} (${purpose.code})`;
+    } else {
+      this.donationSubCategoryForm.patchValue({ purposeId: null });
+      this.purposeInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredPurposes = this.donationPurposes;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingPurpose = false;
+    }, 100);
+  }
+
+  displayPurposeName = (purpose: DonationPurposeDropdownDTO | null): string => {
+    return purpose ? `${purpose.name} (${purpose.code})` : '';
   }
 
   onSubmit(): void {

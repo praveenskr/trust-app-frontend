@@ -2,10 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SerialNumberConfigCreateDTO, SerialNumberConfigDTO, SerialNumberConfigUpdateDTO } from '../../../models/serial-number-config.model';
 
 @Component({
@@ -15,10 +12,7 @@ import { SerialNumberConfigCreateDTO, SerialNumberConfigDTO, SerialNumberConfigU
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule
+    MatButtonModule
   ],
   templateUrl: './serial-number-config-dialog.component.html',
   styleUrls: ['./serial-number-config-dialog.component.css']

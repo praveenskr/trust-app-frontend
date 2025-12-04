@@ -1,0 +1,253 @@
+<div class="w-full max-w-4xl">
+  <div class="bg-blue-600 px-6 py-4">
+    <h2 class="text-xl font-semibold text-white">
+      {{ isEditMode ? 'Edit Donation' : 'Add New Donation' }}
+    </h2>
+  </div>
+  
+  <mat-dialog-content class="px-6 pb-6 bg-white">
+    <div *ngIf="isLoadingMasterData" class="flex flex-col items-center justify-center py-12">
+      <svg class="animate-spin h-12 w-12 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="text-gray-600">Loading master data...</p>
+    </div>
+
+    <form [formGroup]="donationForm" (ngSubmit)="onSubmit()" *ngIf="!isLoadingMasterData" class="space-y-6 pt-6">
+      <!-- Donor Information -->
+      <div>
+        <h3 class="text-base font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Donor Information</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="donorName" class="input-label">Donor Name <span class="text-red-500">*</span></label>
+            <input 
+              id="donorName"
+              type="text" 
+              formControlName="donorName" 
+              placeholder="Enter donor name" 
+              required
+              [class.error]="isFieldInvalid('donorName')"
+              class="modern-input">
+            <div *ngIf="isFieldInvalid('donorName')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('donorName') }}
+            </div>
+          </div>
+
+          <div>
+            <label for="panNumber" class="input-label">PAN Number</label>
+            <input 
+              id="panNumber"
+              type="text" 
+              formControlName="panNumber" 
+              placeholder="ABCDE1234F" 
+              maxlength="10"
+              [class.error]="isFieldInvalid('panNumber')"
+              class="modern-input">
+            <div class="input-hint">Format: ABCDE1234F</div>
+            <div *ngIf="isFieldInvalid('panNumber')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('panNumber') }}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="donorAddress" class="input-label">Donor Address</label>
+          <textarea 
+            id="donorAddress"
+            formControlName="donorAddress" 
+            rows="2" 
+            placeholder="Enter donor address (optional)"
+            class="modern-textarea"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="donorPhone" class="input-label">Phone</label>
+            <input 
+              id="donorPhone"
+              type="text" 
+              formControlName="donorPhone" 
+              placeholder="Enter phone number"
+              [class.error]="isFieldInvalid('donorPhone')"
+              class="modern-input">
+            <div *ngIf="isFieldInvalid('donorPhone')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('donorPhone') }}
+            </div>
+          </div>
+
+          <div>
+            <label for="donorEmail" class="input-label">Email</label>
+            <input 
+              id="donorEmail"
+              type="email" 
+              formControlName="donorEmail" 
+              placeholder="Enter email address"
+              [class.error]="isFieldInvalid('donorEmail')"
+              class="modern-input">
+            <div *ngIf="isFieldInvalid('donorEmail')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('donorEmail') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donation Details -->
+      <div>
+        <h3 class="text-base font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Donation Details</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="amount" class="input-label">Amount <span class="text-red-500">*</span></label>
+            <input 
+              id="amount"
+              type="number" 
+              formControlName="amount" 
+              placeholder="0.00" 
+              step="0.01" 
+              min="0.01" 
+              required
+              [class.error]="isFieldInvalid('amount')"
+              class="modern-input">
+            <div *ngIf="isFieldInvalid('amount')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('amount') }}
+            </div>
+          </div>
+
+          <div>
+            <label for="donationDate" class="input-label">Donation Date <span class="text-red-500">*</span></label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <input matInput [matDatepicker]="picker" formControlName="donationDate" required>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="isFieldInvalid('donationDate')">
+                {{ getErrorMessage('donationDate') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+          <label for="paymentModeId" class="input-label">Payment Mode <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select formControlName="paymentModeId" required>
+              <mat-option [value]="null">Select Payment Mode</mat-option>
+              <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">
+                {{ mode.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('paymentModeId')">
+              {{ getErrorMessage('paymentModeId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="purposeId" class="input-label">Purpose <span class="text-red-500">*</span></label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <mat-select formControlName="purposeId" required>
+                <mat-option [value]="null">Select Purpose</mat-option>
+                <mat-option *ngFor="let purpose of purposes" [value]="purpose.id">
+                  {{ purpose.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isFieldInvalid('purposeId')">
+                {{ getErrorMessage('purposeId') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label for="subCategoryId" class="input-label">Sub Category</label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <mat-select formControlName="subCategoryId" [disabled]="!donationForm.get('purposeId')?.value">
+                <mat-option [value]="null">None</mat-option>
+                <mat-option *ngFor="let subCat of subCategories" [value]="subCat.id">
+                  {{ subCat.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="branchId" class="input-label">Branch <span class="text-red-500">*</span></label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <mat-select formControlName="branchId" required>
+                <mat-option [value]="null">Select Branch</mat-option>
+                <mat-option *ngFor="let branch of branches" [value]="branch.id">
+                  {{ branch.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isFieldInvalid('branchId')">
+                {{ getErrorMessage('branchId') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label for="eventId" class="input-label">Event</label>
+            <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+              <mat-select formControlName="eventId" [disabled]="!donationForm.get('branchId')?.value">
+                <mat-option [value]="null">None</mat-option>
+                <mat-option *ngFor="let event of events" [value]="event.id">
+                  {{ event.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+          <label for="notes" class="input-label">Notes</label>
+          <textarea 
+            id="notes"
+            formControlName="notes" 
+            rows="3" 
+            placeholder="Enter any additional notes (optional)"
+            class="modern-textarea"></textarea>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button 
+      type="button"
+      (click)="onCancel()" 
+      [disabled]="isSubmitting || isLoadingMasterData"
+      class="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+      Cancel
+    </button>
+    <button 
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || donationForm.invalid || isLoadingMasterData"
+      class="ml-3 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold disabled:cursor-not-allowed">
+      <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
+      <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

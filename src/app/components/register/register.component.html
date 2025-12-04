@@ -1,97 +1,160 @@
-<div class="register-container">
-  <mat-card class="register-card">
-    <mat-card-header>
-      <mat-card-title>Create Account</mat-card-title>
-      <mat-card-subtitle>Register a new user account</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <!-- Username -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter username" required>
-          <mat-error *ngIf="isFieldInvalid('username')">
-            {{ getErrorMessage('username') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="Enter email" required>
-          <mat-error *ngIf="isFieldInvalid('email')">
-            {{ getErrorMessage('email') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Full Name -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Full Name</mat-label>
-          <input matInput formControlName="fullName" placeholder="Enter full name" required>
-          <mat-error *ngIf="isFieldInvalid('fullName')">
-            {{ getErrorMessage('fullName') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Password -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" placeholder="Enter password" required>
-          <mat-hint>Password must be at least 8 characters</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('password')">
-            {{ getErrorMessage('password') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Roles Selection -->
-        <div class="roles-section">
-          <label class="roles-label">Select Roles *</label>
-          <div *ngIf="isLoading" class="loading-roles">
-            <mat-spinner diameter="30"></mat-spinner>
-            <span>Loading roles...</span>
-          </div>
-          <div *ngIf="!isLoading && roles.length === 0" class="no-roles">
-            No roles available
-          </div>
-          <div *ngIf="!isLoading && roles.length > 0" class="roles-checkboxes">
-            <mat-checkbox
-              *ngFor="let role of roles"
-              [checked]="selectedRoleIds.includes(role.id)"
-              (change)="onRoleChange(role.id, $event)"
-              class="role-checkbox">
-              {{ role.name }}
-              <span class="role-description" *ngIf="role.description"> - {{ role.description }}</span>
-            </mat-checkbox>
-          </div>
-          <div *ngIf="isFieldInvalid('roleIds') && registerForm.get('roleIds')?.touched" class="error-message">
-            At least one role must be selected
-          </div>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12">
+  <div class="w-full max-w-2xl">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
         </div>
+        <h1 class="text-3xl font-bold text-white mb-2">Create Account</h1>
+        <p class="text-blue-100">Register a new user account</p>
+      </div>
 
-        <!-- Submit Button -->
-        <div class="button-container">
+      <div class="p-8">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="username" class="input-label">Username <span class="text-red-500">*</span></label>
+              <input 
+                id="username"
+                type="text" 
+                formControlName="username" 
+                placeholder="Enter username" 
+                required
+                [class.error]="isFieldInvalid('username')"
+                class="modern-input">
+              <div *ngIf="isFieldInvalid('username')" class="input-error">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {{ getErrorMessage('username') }}
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="input-label">Email <span class="text-red-500">*</span></label>
+              <input 
+                id="email"
+                type="email" 
+                formControlName="email" 
+                placeholder="Enter email" 
+                required
+                [class.error]="isFieldInvalid('email')"
+                class="modern-input">
+              <div *ngIf="isFieldInvalid('email')" class="input-error">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {{ getErrorMessage('email') }}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="fullName" class="input-label">Full Name <span class="text-red-500">*</span></label>
+            <input 
+              id="fullName"
+              type="text" 
+              formControlName="fullName" 
+              placeholder="Enter full name" 
+              required
+              [class.error]="isFieldInvalid('fullName')"
+              class="modern-input">
+            <div *ngIf="isFieldInvalid('fullName')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('fullName') }}
+            </div>
+          </div>
+
+          <div>
+            <label for="password" class="input-label">Password <span class="text-red-500">*</span></label>
+            <input 
+              id="password"
+              type="password" 
+              formControlName="password" 
+              placeholder="Enter password" 
+              required
+              [class.error]="isFieldInvalid('password')"
+              class="modern-input">
+            <div class="input-hint">Password must be at least 8 characters</div>
+            <div *ngIf="isFieldInvalid('password')" class="input-error">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              {{ getErrorMessage('password') }}
+            </div>
+          </div>
+
+          <!-- Roles Selection -->
+          <div class="bg-gray-50 rounded-lg p-5 border border-gray-200">
+            <label class="input-label mb-4">
+              Select Roles <span class="text-red-500">*</span>
+            </label>
+            
+            <div *ngIf="isLoading" class="flex items-center gap-3 py-4">
+              <svg class="animate-spin h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span class="text-gray-600">Loading roles...</span>
+            </div>
+
+            <div *ngIf="!isLoading && roles.length === 0" class="text-gray-500 py-4">
+              No roles available
+            </div>
+
+            <div *ngIf="!isLoading && roles.length > 0" class="space-y-2">
+              <label
+                *ngFor="let role of roles"
+                class="flex items-center p-3 hover:bg-white rounded-lg transition-colors cursor-pointer group">
+                <input
+                  type="checkbox"
+                  [checked]="selectedRoleIds.includes(role.id)"
+                  (change)="onRoleChange(role.id, $event)"
+                  class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+                <span class="ml-3 text-gray-700 font-medium">
+                  {{ role.name }}
+                  <span class="text-gray-500 text-sm font-normal" *ngIf="role.description"> - {{ role.description }}</span>
+                </span>
+              </label>
+            </div>
+
+            <div *ngIf="isFieldInvalid('roleIds') && registerForm.get('roleIds')?.touched" class="input-error mt-3">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              At least one role must be selected
+            </div>
+          </div>
+
           <button
-            mat-raised-button
-            color="primary"
             type="submit"
             [disabled]="isSubmitting || registerForm.invalid"
-            class="submit-button">
-            <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+            class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 font-semibold text-base disabled:cursor-not-allowed">
+            <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
             <span *ngIf="!isSubmitting">Register</span>
             <span *ngIf="isSubmitting">Registering...</span>
           </button>
-        </div>
 
-        <!-- Login Link -->
-        <div class="login-link-container">
-          <p class="login-text">
-            Already have an account?
-            <a (click)="navigateToLogin()" class="login-link">Sign in here</a>
-          </p>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+          <div class="text-center pt-4 border-t border-gray-200">
+            <p class="text-sm text-gray-600">
+              Already have an account?
+              <button 
+                type="button"
+                (click)="navigateToLogin()"
+                class="text-blue-600 hover:text-blue-700 font-semibold focus:outline-none transition-colors">
+                Sign in here
+              </button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-

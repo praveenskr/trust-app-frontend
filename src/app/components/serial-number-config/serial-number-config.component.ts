@@ -82,7 +82,14 @@ export class SerialNumberConfigComponent implements OnInit {
     });
   }
 
-  openEditDialog(config: SerialNumberConfigDTO): void {
+  openEditDialog(config: SerialNumberConfigDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(SerialNumberConfigDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -92,6 +99,12 @@ export class SerialNumberConfigComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateConfiguration(result.id, result.data);
       }

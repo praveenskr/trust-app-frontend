@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { BranchDTO, BranchCreateDTO, BranchUpdateDTO } from '../models/branch.model';
+import { BranchDTO, BranchCreateDTO, BranchUpdateDTO, BranchDropdownDTO, PageResponse } from '../models/branch.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -17,9 +17,48 @@ export class BranchService {
     private authService: AuthService
   ) { }
 
-  getAllBranches(includeInactive: boolean = false): Observable<ApiResponse<BranchDTO[]>> {
-    const params = new HttpParams().set('includeInactive', includeInactive.toString());
-    return this.http.get<ApiResponse<BranchDTO[]>>(this.apiUrl, { params });
+  getAllBranches(
+    includeInactive?: boolean,
+    city?: string,
+    state?: string,
+    search?: string,
+    page?: number,
+    size?: number,
+    sortBy?: string,
+    sortDir?: string
+  ): Observable<ApiResponse<PageResponse<BranchDTO>>> {
+    let params = new HttpParams();
+    
+    if (includeInactive !== undefined) {
+      params = params.set('includeInactive', includeInactive.toString());
+    }
+    if (city) {
+      params = params.set('city', city);
+    }
+    if (state) {
+      params = params.set('state', state);
+    }
+    if (search) {
+      params = params.set('search', search);
+    }
+    if (page !== undefined) {
+      params = params.set('page', page.toString());
+    }
+    if (size !== undefined) {
+      params = params.set('size', size.toString());
+    }
+    if (sortBy) {
+      params = params.set('sortBy', sortBy);
+    }
+    if (sortDir) {
+      params = params.set('sortDir', sortDir);
+    }
+    
+    return this.http.get<ApiResponse<PageResponse<BranchDTO>>>(this.apiUrl, { params });
+  }
+
+  getAllBranchesForDropdown(): Observable<ApiResponse<BranchDropdownDTO[]>> {
+    return this.http.get<ApiResponse<BranchDropdownDTO[]>>(`${this.apiUrl}/dropdown`);
   }
 
   getBranchById(id: number): Observable<ApiResponse<BranchDTO>> {

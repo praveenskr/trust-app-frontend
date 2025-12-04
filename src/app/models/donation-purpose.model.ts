@@ -24,3 +24,9 @@ export interface DonationPurposeUpdateDTO {
   isActive?: boolean;
 }
 
+export interface DonationPurposeDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+

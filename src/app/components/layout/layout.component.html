@@ -1,70 +1,110 @@
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container class="h-screen w-full">
   <!-- Sidebar -->
-  <mat-sidenav mode="side" opened class="sidenav">
-    <div class="sidebar-header">
-      <h2>Trust App</h2>
-    </div>
-
-    <mat-nav-list>
-      <!-- Home Menu Item -->
-      <a mat-list-item routerLink="/home" routerLinkActive="active">
-        <mat-icon>home</mat-icon>
-        <span>Home</span>
-      </a>
-
-      <!-- Master Data Menu Item with Sub-menu -->
-      <mat-list-item (click)="toggleMasterMenu()" class="master-menu-item">
-        <mat-icon>storage</mat-icon>
-        <span>Master Data</span>
-        <mat-icon class="expand-icon">{{ isMasterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-      </mat-list-item>
-
-      <!-- Master Data Sub-menu Items -->
-      <div *ngIf="isMasterMenuOpen" class="sub-menu">
-        <a 
-          *ngFor="let item of masterMenuItems" 
-          mat-list-item 
-          [routerLink]="item.route" 
-          routerLinkActive="active"
-          class="sub-menu-item">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-        </a>
+  <mat-sidenav mode="side" opened class="w-64" [fixedInViewport]="false">
+    <div class="h-full bg-white border-r border-gray-200 overflow-y-auto">
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800">Trust App</h2>
       </div>
-    </mat-nav-list>
+
+      <nav class="mt-1">
+        <!-- Home Menu Item -->
+        <a 
+          routerLink="/home" 
+          routerLinkActive="bg-blue-50 text-blue-600"
+          class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors duration-150">
+          <mat-icon class="mr-3 text-gray-600 text-xl">home</mat-icon>
+          <span class="text-sm font-medium">Home</span>
+        </a>
+
+        <!-- Master Data Menu Item -->
+        <button 
+          (click)="toggleMasterMenu()" 
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600 text-xl">storage</mat-icon>
+            <span class="text-sm font-medium">Master Data</span>
+          </div>
+          <mat-icon [class.rotate-180]="isMasterMenuOpen" class="text-gray-400 text-lg transition-transform duration-200">{{ isMasterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+
+        <!-- Master Data Sub-menu -->
+        <div *ngIf="isMasterMenuOpen" class="bg-white">
+          <a 
+            *ngFor="let item of masterMenuItems" 
+            [routerLink]="item.route" 
+            routerLinkActive="bg-blue-50 text-blue-600 font-medium"
+            class="flex items-center px-12 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors duration-150">
+            <mat-icon class="mr-3 text-base text-gray-500">{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        </div>
+
+        <!-- Transactions Menu Item -->
+        <button 
+          (click)="toggleTransactionMenu()" 
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600 text-xl">receipt_long</mat-icon>
+            <span class="text-sm font-medium">Transactions</span>
+          </div>
+          <mat-icon [class.rotate-180]="isTransactionMenuOpen" class="text-gray-400 text-lg transition-transform duration-200">{{ isTransactionMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+
+        <!-- Transactions Sub-menu -->
+        <div *ngIf="isTransactionMenuOpen" class="bg-white">
+          <a 
+            *ngFor="let item of transactionMenuItems" 
+            [routerLink]="item.route" 
+            routerLinkActive="bg-blue-50 text-blue-600 font-medium"
+            class="flex items-center px-12 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors duration-150">
+            <mat-icon class="mr-3 text-base text-gray-500">{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        </div>
+      </nav>
+    </div>
   </mat-sidenav>
 
   <!-- Main Content Area -->
-  <mat-sidenav-content>
-    <!-- Header Toolbar -->
-    <mat-toolbar color="primary" class="toolbar">
-      <span class="toolbar-title">Trust App</span>
-      <span class="spacer"></span>
-      
-      <!-- User Menu -->
-      <div class="user-info">
-        <span class="user-name">{{ user?.fullName || user?.username || 'User' }}</span>
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <button mat-menu-item disabled>
-            <mat-icon>email</mat-icon>
-            <span>{{ user?.email }}</span>
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
+  <mat-sidenav-content class="flex flex-col bg-gray-50 min-w-0">
+    <!-- Header -->
+    <mat-toolbar color="primary" class="bg-blue-600 shadow-sm min-h-[64px] h-[64px] flex-shrink-0">
+      <div class="flex items-center justify-between w-full px-6 min-w-0">
+        <span class="text-white text-lg font-semibold whitespace-nowrap">Trust App</span>
+        
+        <!-- User Menu -->
+        <div class="flex items-center space-x-4 flex-shrink-0">
+          <div class="text-right hidden md:block">
+            <p class="text-sm font-medium text-white whitespace-nowrap">{{ user?.fullName || user?.username || 'User' }}</p>
+            <p class="text-xs text-blue-100 whitespace-nowrap">{{ user?.email }}</p>
+          </div>
+          <div [matMenuTriggerFor]="userMenu">
+            <button mat-icon-button class="text-white hover:bg-blue-700 rounded-full transition-colors">
+              <mat-icon>account_circle</mat-icon>
+            </button>
+          </div>
+          <mat-menu #userMenu="matMenu" class="mt-2 shadow-lg">
+            <button mat-menu-item disabled class="opacity-60">
+              <mat-icon>email</mat-icon>
+              <span>{{ user?.email }}</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="logout()" class="text-red-600 hover:bg-red-50">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
     </mat-toolbar>
 
     <!-- Page Content -->
-    <div class="content">
-      <router-outlet></router-outlet>
+    <div class="flex-1 overflow-y-auto bg-gray-50 min-w-0">
+      <div class="p-6 min-w-0">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-

@@ -39,3 +39,20 @@ export interface BranchUpdateDTO {
   isActive?: boolean;
 }
 
+export interface BranchDropdownDTO {
+  id: number;
+  code: string;
+  name: string;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+}
+

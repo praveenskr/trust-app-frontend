@@ -83,7 +83,14 @@ export class SubscriptionPlanComponent implements OnInit {
     });
   }
 
-  openEditDialog(subscriptionPlan: SubscriptionPlanDTO): void {
+  openEditDialog(subscriptionPlan: SubscriptionPlanDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(SubscriptionPlanDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -93,13 +100,26 @@ export class SubscriptionPlanComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateSubscriptionPlan(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(subscriptionPlan: SubscriptionPlanDTO): void {
+  openDeleteDialog(subscriptionPlan: SubscriptionPlanDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(SubscriptionPlanDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -107,6 +127,12 @@ export class SubscriptionPlanComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteSubscriptionPlan(subscriptionPlan.id);
       }

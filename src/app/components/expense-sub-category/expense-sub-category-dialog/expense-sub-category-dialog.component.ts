@@ -2,15 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ExpenseSubCategoryCreateDTO, ExpenseSubCategoryDTO, ExpenseSubCategoryUpdateDTO } from '../../../models/expense-sub-category.model';
-import { ExpenseCategoryService } from '../../../services/expense-category.service';
-import { ExpenseCategoryDTO } from '../../../models/expense-category.model';
+import { ExpenseCategoryDropdownDTO } from '../../../models/expense-category.model';
 
 @Component({
   selector: 'app-expense-sub-category-dialog',
@@ -19,12 +17,11 @@ import { ExpenseCategoryDTO } from '../../../models/expense-category.model';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   templateUrl: './expense-sub-category-dialog.component.html',
   styleUrls: ['./expense-sub-category-dialog.component.css']
@@ -34,38 +31,37 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   expenseSubCategoryId?: number;
-  expenseCategories: ExpenseCategoryDTO[] = [];
-  isLoadingCategories = false;
+  expenseCategories: ExpenseCategoryDropdownDTO[] = [];
+  filteredCategories: ExpenseCategoryDropdownDTO[] = [];
+  categoryInputValue = '';
+  selectedCategory: ExpenseCategoryDropdownDTO | null = null;
+  isSelectingCategory = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ExpenseSubCategoryDialogComponent>,
-    private expenseCategoryService: ExpenseCategoryService,
-    @Inject(MAT_DIALOG_DATA) public data?: { expenseSubCategory: ExpenseSubCategoryDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      expenseSubCategory?: ExpenseSubCategoryDTO;
+      expenseCategories?: ExpenseCategoryDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.expenseSubCategory;
     this.expenseSubCategoryId = data?.expenseSubCategory?.id;
+    this.expenseCategories = data?.expenseCategories || [];
+    this.filteredCategories = this.expenseCategories;
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadExpenseCategories();
-  }
-
-  private loadExpenseCategories(): void {
-    this.isLoadingCategories = true;
-    this.expenseCategoryService.getAllExpenseCategories(false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.expenseCategories = response.data;
-        }
-        this.isLoadingCategories = false;
-      },
-      error: (error) => {
-        console.error('Error loading expense categories:', error);
-        this.isLoadingCategories = false;
+    // Expense categories are now loaded in parent and passed via data
+    // Set initial category input value if editing
+    if (this.isEditMode && this.data?.expenseSubCategory?.categoryId) {
+      const category = this.expenseCategories.find(c => c.id === this.data?.expenseSubCategory?.categoryId);
+      if (category) {
+        this.selectedCategory = category;
+        this.categoryInputValue = `${category.name} (${category.code})`;
       }
-    });
+    }
   }
 
   private initializeForm(): void {
@@ -79,6 +75,52 @@ export class ExpenseSubCategoryDialogComponent implements OnInit {
       displayOrder: [expenseSubCategory?.displayOrder || null],
       isActive: [expenseSubCategory?.isActive !== undefined ? expenseSubCategory.isActive : true]
     });
+
+    // Set category input value if category is already selected (for edit mode)
+    const categoryId = this.expenseSubCategoryForm.get('categoryId')?.value;
+    if (categoryId && this.expenseCategories.length > 0) {
+      const category = this.expenseCategories.find(c => c.id === categoryId);
+      if (category) {
+        this.selectedCategory = category;
+        this.categoryInputValue = `${category.name} (${category.code})`;
+      }
+    }
+  }
+
+  filterCategories(value: string): void {
+    // Skip filtering if we're in the process of selecting an option
+    if (this.isSelectingCategory) {
+      return;
+    }
+    this.categoryInputValue = value || '';
+    this.selectedCategory = null; // Clear selection when typing
+    const filterValue = value?.toLowerCase() || '';
+    this.filteredCategories = this.expenseCategories.filter(category => 
+      category.name.toLowerCase().includes(filterValue) || 
+      category.code.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onCategorySelected(category: ExpenseCategoryDropdownDTO | null): void {
+    this.isSelectingCategory = true;
+    this.selectedCategory = category;
+    if (category) {
+      this.expenseSubCategoryForm.patchValue({ categoryId: category.id });
+      this.categoryInputValue = `${category.name} (${category.code})`;
+    } else {
+      this.expenseSubCategoryForm.patchValue({ categoryId: null });
+      this.categoryInputValue = '';
+    }
+    // Reset filtered list to show all after selection
+    this.filteredCategories = this.expenseCategories;
+    // Reset flag after a short delay to allow the selection to complete
+    setTimeout(() => {
+      this.isSelectingCategory = false;
+    }, 100);
+  }
+
+  displayCategoryName = (category: ExpenseCategoryDropdownDTO | null): string => {
+    return category ? `${category.name} (${category.code})` : '';
   }
 
   onSubmit(): void {

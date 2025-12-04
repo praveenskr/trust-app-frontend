@@ -2,17 +2,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { EventCreateDTO, EventDTO, EventUpdateDTO, EVENT_STATUSES } from '../../../models/event.model';
-import { BranchService } from '../../../services/branch.service';
-import { BranchDTO } from '../../../models/branch.model';
+import { BranchDropdownDTO } from '../../../models/branch.model';
 
 @Component({
   selector: 'app-event-dialog',
@@ -21,11 +18,9 @@ import { BranchDTO } from '../../../models/branch.model';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule
@@ -39,40 +34,26 @@ export class EventDialogComponent implements OnInit {
   isSubmitting = false;
   isEditMode = false;
   eventId?: number;
-  branches: BranchDTO[] = [];
-  isLoadingBranches = false;
+  branches: BranchDropdownDTO[] = [];
   eventStatuses = EVENT_STATUSES;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EventDialogComponent>,
-    private branchService: BranchService,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data?: { event: EventDTO }
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      event?: EventDTO;
+      branches?: BranchDropdownDTO[];
+    }
   ) {
     this.isEditMode = !!data?.event;
     this.eventId = data?.event?.id;
+    this.branches = data?.branches || [];
     this.initializeForm();
   }
 
   ngOnInit(): void {
-    this.loadBranches();
-  }
-
-  private loadBranches(): void {
-    this.isLoadingBranches = true;
-    this.branchService.getAllBranches(false).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data) {
-          this.branches = response.data;
-        }
-        this.isLoadingBranches = false;
-      },
-      error: (error) => {
-        console.error('Error loading branches:', error);
-        this.isLoadingBranches = false;
-      }
-    });
+    // Branches are now loaded in parent and passed via data
   }
 
   private initializeForm(): void {

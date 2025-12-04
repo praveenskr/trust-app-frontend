@@ -83,7 +83,14 @@ export class PaymentModeComponent implements OnInit {
     });
   }
 
-  openEditDialog(paymentMode: PaymentModeDTO): void {
+  openEditDialog(paymentMode: PaymentModeDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(PaymentModeDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -93,13 +100,26 @@ export class PaymentModeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updatePaymentMode(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(paymentMode: PaymentModeDTO): void {
+  openDeleteDialog(paymentMode: PaymentModeDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(PaymentModeDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -107,6 +127,12 @@ export class PaymentModeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deletePaymentMode(paymentMode.id);
       }

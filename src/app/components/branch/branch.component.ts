@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -7,6 +8,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { BranchService } from '../../services/branch.service';
 import { BranchCreateDTO, BranchDTO, BranchUpdateDTO } from '../../models/branch.model';
 import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
@@ -17,13 +22,18 @@ import { BranchDeleteDialogComponent } from './branch-delete-dialog/branch-delet
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   templateUrl: './branch.component.html',
   styleUrls: ['./branch.component.css']
@@ -33,6 +43,23 @@ export class BranchComponent implements OnInit {
   displayedColumns: string[] = ['code', 'name', 'city', 'state', 'phone', 'email', 'contactPerson', 'isActive', 'actions'];
   isSubmitting = false;
   isLoading = false;
+  
+  // Pagination properties
+  totalElements = 0;
+  totalPages = 0;
+  pageSize = 20;
+  currentPage = 0;
+  pageSizeOptions = [10, 20, 50, 100];
+  
+  // Filter properties
+  includeInactive = false;
+  cityFilter = '';
+  stateFilter = '';
+  searchFilter = '';
+  
+  // Sort properties
+  sortBy = 'name';
+  sortDir: 'ASC' | 'DESC' = 'ASC';
 
   constructor(
     private branchService: BranchService,
@@ -46,21 +73,70 @@ export class BranchComponent implements OnInit {
 
   private loadBranches(): void {
     this.isLoading = true;
-    this.branchService.getAllBranches(false).subscribe({
+    this.branchService.getAllBranches(
+      this.includeInactive,
+      this.cityFilter || undefined,
+      this.stateFilter || undefined,
+      this.searchFilter || undefined,
+      this.currentPage,
+      this.pageSize,
+      this.sortBy,
+      this.sortDir
+    ).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
-          this.branches = response.data;
+          this.branches = response.data.content;
+          this.totalElements = response.data.totalElements;
+          this.totalPages = response.data.totalPages;
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error loading branches:', error);
-        this.snackBar.open('Failed to load branches', 'Close', {
+        let errorMessage = 'Failed to load branches';
+        if (error.error && error.error.message) {
+          errorMessage = error.error.message;
+        }
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000
         });
         this.isLoading = false;
       }
     });
+  }
+  
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadBranches();
+  }
+  
+  applyFilters(): void {
+    this.currentPage = 0; // Reset to first page when filtering
+    this.loadBranches();
+  }
+  
+  clearFilters(): void {
+    this.includeInactive = false;
+    this.cityFilter = '';
+    this.stateFilter = '';
+    this.searchFilter = '';
+    this.currentPage = 0;
+    this.sortBy = 'name';
+    this.sortDir = 'ASC';
+    this.loadBranches();
+  }
+  
+  onSortChange(sortField: string): void {
+    if (this.sortBy === sortField) {
+      // Toggle sort direction
+      this.sortDir = this.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sortBy = sortField;
+      this.sortDir = 'ASC';
+    }
+    this.currentPage = 0; // Reset to first page when sorting
+    this.loadBranches();
   }
 
   openAddDialog(): void {
@@ -82,7 +158,14 @@ export class BranchComponent implements OnInit {
     });
   }
 
-  openEditDialog(branch: BranchDTO): void {
+  openEditDialog(branch: BranchDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(BranchDialogComponent, {
       width: '750px',
       maxWidth: '90vw',
@@ -92,13 +175,26 @@ export class BranchComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result && result.mode === 'edit') {
         this.updateBranch(result.id, result.data);
       }
     });
   }
 
-  openDeleteDialog(branch: BranchDTO): void {
+  openDeleteDialog(branch: BranchDTO, event?: Event): void {
+    // Blur the button to remove focus state
+    if (event) {
+      const target = event.target as HTMLElement;
+      const button = target.closest('button') || target;
+      button.blur();
+    }
+    
     const dialogRef = this.dialog.open(BranchDeleteDialogComponent, {
       width: '400px',
       disableClose: true,
@@ -106,6 +202,12 @@ export class BranchComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Ensure button is blurred after dialog closes
+      if (event) {
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') || target;
+        button.blur();
+      }
       if (result === true) {
         this.deleteBranch(branch.id);
       }

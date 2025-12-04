@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { PaymentModeDTO, PaymentModeCreateDTO, PaymentModeUpdateDTO } from '../models/payment-mode.model';
+import { PaymentModeDTO, PaymentModeCreateDTO, PaymentModeUpdateDTO, PaymentModeDropdownDTO } from '../models/payment-mode.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,10 @@ export class PaymentModeService {
 
   deletePaymentMode(id: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`);
+  }
+
+  getAllPaymentModesForDropdown(): Observable<ApiResponse<PaymentModeDropdownDTO[]>> {
+    return this.http.get<ApiResponse<PaymentModeDropdownDTO[]>>(`${this.apiUrl}/dropdown`);
   }
 }
 

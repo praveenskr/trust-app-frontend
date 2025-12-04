@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { ExpenseCategoryDTO, ExpenseCategoryCreateDTO, ExpenseCategoryUpdateDTO } from '../models/expense-category.model';
+import { ExpenseCategoryDTO, ExpenseCategoryCreateDTO, ExpenseCategoryUpdateDTO, ExpenseCategoryDropdownDTO } from '../models/expense-category.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -56,6 +56,10 @@ export class ExpenseCategoryService {
     
     const params = new HttpParams().set('deletedBy', deletedBy.toString());
     return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`, { params });
+  }
+
+  getAllExpenseCategoriesForDropdown(): Observable<ApiResponse<ExpenseCategoryDropdownDTO[]>> {
+    return this.http.get<ApiResponse<ExpenseCategoryDropdownDTO[]>>(`${this.apiUrl}/dropdown`);
   }
 }
 

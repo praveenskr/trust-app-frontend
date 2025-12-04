@@ -1,105 +1,167 @@
-<div class="dialog-container">
-  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Branch' : 'Add New Branch' }}</h2>
+<div class="w-full max-w-3xl">
+  <div class="bg-blue-600 px-6 py-4">
+    <h2 class="text-xl font-semibold text-white">
+      {{ isEditMode ? 'Edit Branch' : 'Add New Branch' }}
+    </h2>
+  </div>
   
-  <mat-dialog-content>
-    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <!-- Branch Code -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Branch Code</mat-label>
-          <input matInput formControlName="code" placeholder="Enter branch code" required>
-          <mat-hint>Maximum 50 characters</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('code')">
+  <mat-dialog-content class="px-6 pb-6 bg-white">
+    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="space-y-6 pt-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="code" class="input-label">Branch Code <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
+          <input 
+            id="code"
+            type="text" 
+            formControlName="code" 
+            placeholder="Enter branch code" 
+            required
+            [class.error]="isFieldInvalid('code')"
+            [disabled]="isEditMode"
+            class="modern-input">
+          <div class="input-hint">Maximum 50 characters</div>
+          <div *ngIf="isFieldInvalid('code')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
             {{ getErrorMessage('code') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Branch Name -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Branch Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter branch name" required>
-          <mat-hint>Maximum 255 characters</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('name')">
-            {{ getErrorMessage('name') }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <!-- Address -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Address</mat-label>
-        <textarea matInput formControlName="address" rows="2" placeholder="Enter address (optional)"></textarea>
-      </mat-form-field>
-
-      <div class="form-row">
-        <!-- City -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>City</mat-label>
-          <input matInput formControlName="city" placeholder="Enter city (optional)">
-        </mat-form-field>
-
-        <!-- State -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>State</mat-label>
-          <input matInput formControlName="state" placeholder="Enter state (optional)">
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <!-- Pincode -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Pincode</mat-label>
-          <input matInput formControlName="pincode" placeholder="Enter pincode (optional)">
-        </mat-form-field>
-
-        <!-- Phone -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Phone</mat-label>
-          <input matInput formControlName="phone" placeholder="Enter phone (optional)">
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="Enter email (optional)">
-          <mat-error *ngIf="isFieldInvalid('email')">
-            {{ getErrorMessage('email') }}
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Contact Person -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Contact Person</mat-label>
-          <input matInput formControlName="contactPerson" placeholder="Enter contact person (optional)">
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <!-- Is Active -->
-        <div class="checkbox-field">
-          <mat-checkbox formControlName="isActive" color="primary">
-            Active
-          </mat-checkbox>
+          </div>
         </div>
+
+        <div>
+          <label for="name" class="input-label">Branch Name <span class="text-red-500">*</span></label>
+          <input 
+            id="name"
+            type="text" 
+            formControlName="name" 
+            placeholder="Enter branch name" 
+            required
+            [class.error]="isFieldInvalid('name')"
+            class="modern-input">
+          <div class="input-hint">Maximum 255 characters</div>
+          <div *ngIf="isFieldInvalid('name')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label for="address" class="input-label">Address</label>
+        <textarea 
+          id="address"
+          formControlName="address" 
+          rows="3" 
+          placeholder="Enter address (optional)"
+          class="modern-textarea"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="city" class="input-label">City</label>
+          <input 
+            id="city"
+            type="text" 
+            formControlName="city" 
+            placeholder="Enter city (optional)"
+            class="modern-input">
+        </div>
+
+        <div>
+          <label for="state" class="input-label">State</label>
+          <input 
+            id="state"
+            type="text" 
+            formControlName="state" 
+            placeholder="Enter state (optional)"
+            class="modern-input">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="pincode" class="input-label">Pincode</label>
+          <input 
+            id="pincode"
+            type="text" 
+            formControlName="pincode" 
+            placeholder="Enter pincode (optional)"
+            class="modern-input">
+        </div>
+
+        <div>
+          <label for="phone" class="input-label">Phone</label>
+          <input 
+            id="phone"
+            type="text" 
+            formControlName="phone" 
+            placeholder="Enter phone (optional)"
+            class="modern-input">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="email" class="input-label">Email</label>
+          <input 
+            id="email"
+            type="email" 
+            formControlName="email" 
+            placeholder="Enter email (optional)"
+            [class.error]="isFieldInvalid('email')"
+            class="modern-input">
+          <div *ngIf="isFieldInvalid('email')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            {{ getErrorMessage('email') }}
+          </div>
+        </div>
+
+        <div>
+          <label for="contactPerson" class="input-label">Contact Person</label>
+          <input 
+            id="contactPerson"
+            type="text" 
+            formControlName="contactPerson" 
+            placeholder="Enter contact person (optional)"
+            class="modern-input">
+        </div>
+      </div>
+
+      <div class="flex items-center pt-2">
+        <label class="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            formControlName="isActive"
+            class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+          <span class="ml-3 text-gray-700 font-medium">Active</span>
+        </label>
       </div>
     </form>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+  <mat-dialog-actions align="end" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button 
+      type="button"
+      (click)="onCancel()" 
+      [disabled]="isSubmitting"
+      class="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
       Cancel
     </button>
     <button 
-      mat-raised-button 
-      color="primary" 
+      type="button"
       (click)="onSubmit()"
-      [disabled]="isSubmitting || branchForm.invalid">
-      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      [disabled]="isSubmitting || branchForm.invalid"
+      class="ml-3 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold disabled:cursor-not-allowed">
+      <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
       <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
       <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
     </button>
   </mat-dialog-actions>
 </div>
-

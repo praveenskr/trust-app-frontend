@@ -1,83 +1,137 @@
-<div class="dialog-container">
-  <h2 mat-dialog-title>{{ isEditMode ? 'Edit Expense Sub-Category' : 'Add New Expense Sub-Category' }}</h2>
+<div class="w-full max-w-3xl">
+  <div class="bg-blue-600 px-6 py-4">
+    <h2 class="text-xl font-semibold text-white">
+      {{ isEditMode ? 'Edit Expense Sub-Category' : 'Add New Expense Sub-Category' }}
+    </h2>
+  </div>
   
-  <mat-dialog-content>
-    <form [formGroup]="expenseSubCategoryForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <!-- Expense Category -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Expense Category</mat-label>
-          <mat-select formControlName="categoryId" required>
-            <mat-option *ngFor="let category of expenseCategories" [value]="category.id">
-              {{ category.name }} ({{ category.code }})
-            </mat-option>
-          </mat-select>
-          <mat-hint *ngIf="isLoadingCategories">Loading categories...</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('categoryId')">
-            {{ getErrorMessage('categoryId') }}
-          </mat-error>
-        </mat-form-field>
+  <mat-dialog-content class="px-6 pb-6 bg-white">
+    <form [formGroup]="expenseSubCategoryForm" (ngSubmit)="onSubmit()" class="space-y-6 pt-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="categoryId" class="input-label">Expense Category <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input
+              matInput
+              id="categoryId"
+              type="text"
+              [value]="categoryInputValue"
+              (input)="filterCategories($any($event.target).value)"
+              placeholder="Type to search or select category"
+              required
+              [disabled]="isEditMode"
+              [matAutocomplete]="categoryAuto"
+              [class.error]="isFieldInvalid('categoryId')">
+            <mat-autocomplete
+              #categoryAuto="matAutocomplete"
+              (optionSelected)="onCategorySelected($event.option.value)"
+              [displayWith]="displayCategoryName">
+              <mat-option
+                *ngFor="let category of filteredCategories"
+                [value]="category">
+                {{ category.name }} ({{ category.code }})
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="isFieldInvalid('categoryId')">
+              {{ getErrorMessage('categoryId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-        <!-- Sub-Category Code -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Sub-Category Code</mat-label>
-          <input matInput formControlName="code" placeholder="Enter sub-category code" required>
-          <mat-hint>Maximum 50 characters</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('code')">
+        <div>
+          <label for="code" class="input-label">Sub-Category Code <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
+          <input 
+            id="code"
+            type="text" 
+            formControlName="code" 
+            placeholder="Enter sub-category code" 
+            required
+            [class.error]="isFieldInvalid('code')"
+            [disabled]="isEditMode"
+            class="modern-input">
+          <div class="input-hint">Maximum 50 characters</div>
+          <div *ngIf="isFieldInvalid('code')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
             {{ getErrorMessage('code') }}
-          </mat-error>
-        </mat-form-field>
+          </div>
+        </div>
       </div>
 
-      <div class="form-row">
-        <!-- Sub-Category Name -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Sub-Category Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter sub-category name" required>
-          <mat-hint>Maximum 255 characters</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('name')">
-            {{ getErrorMessage('name') }}
-          </mat-error>
-        </mat-form-field>
+      <div>
+        <label for="name" class="input-label">Sub-Category Name <span class="text-red-500">*</span></label>
+        <input 
+          id="name"
+          type="text" 
+          formControlName="name" 
+          placeholder="Enter sub-category name" 
+          required
+          [class.error]="isFieldInvalid('name')"
+          class="modern-input">
+        <div class="input-hint">Maximum 255 characters</div>
+        <div *ngIf="isFieldInvalid('name')" class="input-error">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          {{ getErrorMessage('name') }}
+        </div>
       </div>
 
-      <!-- Description -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" rows="3" placeholder="Enter description (optional)"></textarea>
-      </mat-form-field>
+      <div>
+        <label for="description" class="input-label">Description</label>
+        <textarea 
+          id="description"
+          formControlName="description" 
+          rows="3" 
+          placeholder="Enter description (optional)"
+          class="modern-textarea"></textarea>
+      </div>
 
-      <div class="form-row">
-        <!-- Display Order -->
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Display Order</mat-label>
-          <input matInput type="number" formControlName="displayOrder" placeholder="Enter display order">
-          <mat-hint>Optional - Used for sorting</mat-hint>
-        </mat-form-field>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="displayOrder" class="input-label">Display Order</label>
+          <input 
+            id="displayOrder"
+            type="number" 
+            formControlName="displayOrder" 
+            placeholder="Enter display order"
+            class="modern-input">
+          <div class="input-hint">Optional - Used for sorting</div>
+        </div>
 
-        <!-- Is Active -->
-        <div class="checkbox-field">
-          <mat-checkbox formControlName="isActive" color="primary">
-            Active
-          </mat-checkbox>
+        <div class="flex items-center pt-8">
+          <label class="flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              formControlName="isActive"
+              class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+            <span class="ml-3 text-gray-700 font-medium">Active</span>
+          </label>
         </div>
       </div>
     </form>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+  <mat-dialog-actions align="end" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button 
+      type="button"
+      (click)="onCancel()" 
+      [disabled]="isSubmitting"
+      class="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
       Cancel
     </button>
     <button 
-      mat-raised-button 
-      color="primary" 
+      type="button"
       (click)="onSubmit()"
-      [disabled]="isSubmitting || expenseSubCategoryForm.invalid">
-      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      [disabled]="isSubmitting || expenseSubCategoryForm.invalid"
+      class="ml-3 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold disabled:cursor-not-allowed">
+      <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
       <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update' : 'Add' }}</span>
       <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Adding...' }}</span>
     </button>
   </mat-dialog-actions>
 </div>
-
