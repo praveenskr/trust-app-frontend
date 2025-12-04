@@ -1,0 +1,21 @@
+<div class="delete-dialog-container">
+  <h2 mat-dialog-title>Delete All Branch Access</h2>
+  
+  <mat-dialog-content>
+    <p>Are you sure you want to delete all branch access for <strong>{{ data.userName }}</strong>?</p>
+    <div class="branch-access-details">
+      <p><strong>Total branches:</strong> {{ data.branchCount }}</p>
+    </div>
+    <p class="warning-text">This action will remove all branch access for this user and cannot be undone.</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+      Delete All
+    </button>
+  </mat-dialog-actions>
+</div>
+
