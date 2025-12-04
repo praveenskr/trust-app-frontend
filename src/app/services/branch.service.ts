@@ -57,11 +57,6 @@ export class BranchService {
     return this.http.get<ApiResponse<PageResponse<BranchDTO>>>(this.apiUrl, { params });
   }
 
-  // // Deprecated: use getAllActiveBranchesForDropdown() or getUserAccessibleBranchesForDropdown()
-  // getAllBranchesForDropdown(): Observable<ApiResponse<BranchDropdownDTO[]>> {
-  //   return this.http.get<ApiResponse<BranchDropdownDTO[]>>(`${this.apiUrl}/dropdown`);
-  // }
-
   /**
    * Returns all active branches for dropdowns (no user access filtering).
    * Used on screens like User Branch Access where admin can assign any branch.

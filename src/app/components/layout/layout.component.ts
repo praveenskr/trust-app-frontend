@@ -51,7 +51,8 @@ export class LayoutComponent implements OnInit {
     { label: 'Vendor', icon: 'store', route: '/home/master/vendor' },
     { label: 'Payment Mode', icon: 'payment', route: '/home/master/payment-mode' },
     { label: 'Branch', icon: 'business', route: '/home/master/branch' },
-    { label: 'User Branch Access', icon: 'account_tree', route: '/home/master/user-branch-access' }
+    { label: 'User Branch Access', icon: 'account_tree', route: '/home/master/user-branch-access' },
+    { label: 'Inter Branch Transfer', icon: 'swap_horiz', route: '/home/master/inter-branch-transfer' }
   ];
 
   transactionMenuItems: MenuItem[] = [
