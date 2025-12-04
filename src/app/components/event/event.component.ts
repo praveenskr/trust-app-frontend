@@ -95,7 +95,7 @@ export class EventComponent implements OnInit {
 
   private loadBranches(): void {
     this.isLoadingBranches = true;
-    this.branchService.getAllBranchesForDropdown().subscribe({
+    this.branchService.getUserAccessibleBranchesForDropdown().subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data) {
           this.branches = response.data;

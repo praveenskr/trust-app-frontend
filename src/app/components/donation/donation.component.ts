@@ -122,7 +122,7 @@ export class DonationComponent implements OnInit {
     Promise.all([
       this.paymentModeService.getAllPaymentModesForDropdown().toPromise(),
       this.purposeService.getAllDonationPurposesForDropdown().toPromise(),
-      this.branchService.getAllBranchesForDropdown().toPromise(),
+      this.branchService.getUserAccessibleBranchesForDropdown().toPromise(),
       this.donationService.getAllActiveDonorNames().toPromise()
     ]).then(([paymentModesRes, purposesRes, branchesRes, donorsRes]) => {
       if (paymentModesRes?.status === 'success' && paymentModesRes.data) {

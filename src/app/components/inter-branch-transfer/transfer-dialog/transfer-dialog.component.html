@@ -1,0 +1,187 @@
+<div class="w-full">
+  <div class="bg-blue-600 px-6 py-4">
+    <h2 class="text-xl font-semibold text-white">Create Inter Branch Transfer</h2>
+  </div>
+  
+  <mat-dialog-content class="px-6 pb-6 bg-white">
+    <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" class="space-y-6 pt-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- From Branch -->
+        <div>
+          <label for="fromBranchId" class="input-label">From Branch <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input
+              matInput
+              id="fromBranchId"
+              type="text"
+              [value]="fromBranchInputValue"
+              (input)="filterFromBranches($any($event.target).value)"
+              placeholder="Type to search or select branch"
+              [matAutocomplete]="fromBranchAuto"
+              required>
+            <mat-autocomplete
+              #fromBranchAuto="matAutocomplete"
+              (optionSelected)="onFromBranchSelected($event.option.value)"
+              [displayWith]="displayFromBranchName">
+              <mat-option
+                *ngFor="let branch of filteredFromBranches"
+                [value]="branch">
+                {{ branch.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="isFieldInvalid('fromBranchId')">
+              {{ getErrorMessage('fromBranchId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- To Branch -->
+        <div>
+          <label for="toBranchId" class="input-label">To Branch <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input
+              matInput
+              id="toBranchId"
+              type="text"
+              [value]="toBranchInputValue"
+              (input)="filterToBranches($any($event.target).value)"
+              placeholder="Type to search or select branch"
+              [matAutocomplete]="toBranchAuto"
+              required>
+            <mat-autocomplete
+              #toBranchAuto="matAutocomplete"
+              (optionSelected)="onToBranchSelected($event.option.value)"
+              [displayWith]="displayToBranchName">
+              <mat-option
+                *ngFor="let branch of filteredToBranches"
+                [value]="branch">
+                {{ branch.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="isFieldInvalid('toBranchId')">
+              {{ getErrorMessage('toBranchId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Amount -->
+        <div>
+          <label for="amount" class="input-label">Amount <span class="text-red-500">*</span></label>
+          <input 
+            id="amount"
+            type="number" 
+            formControlName="amount" 
+            placeholder="Enter amount" 
+            step="0.01"
+            min="0.01"
+            required
+            [class.error]="isFieldInvalid('amount')"
+            class="modern-input">
+          <div *ngIf="isFieldInvalid('amount')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            {{ getErrorMessage('amount') }}
+          </div>
+        </div>
+
+        <!-- Transfer Date -->
+        <div>
+          <label for="transferDate" class="input-label">Transfer Date <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <input matInput [matDatepicker]="transferDatePicker" formControlName="transferDate" placeholder="Select transfer date" required>
+            <mat-datepicker-toggle matIconSuffix [for]="transferDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #transferDatePicker></mat-datepicker>
+            <mat-error *ngIf="isFieldInvalid('transferDate')">
+              {{ getErrorMessage('transferDate') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Payment Mode -->
+        <div>
+          <label for="paymentModeId" class="input-label">Payment Mode <span class="text-red-500">*</span></label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select formControlName="paymentModeId" placeholder="Select payment mode" required>
+              <mat-option [value]="null">Select payment mode</mat-option>
+              <mat-option *ngFor="let paymentMode of paymentModes" [value]="paymentMode.id">
+                {{ paymentMode.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('paymentModeId')">
+              {{ getErrorMessage('paymentModeId') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Status -->
+        <div>
+          <label for="status" class="input-label">Status</label>
+          <mat-form-field appearance="outline" class="w-full modern-select-wrapper">
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of transferStatuses" [value]="status.value">
+                {{ status.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Reference Number -->
+        <div>
+          <label for="referenceNumber" class="input-label">Reference Number</label>
+          <input 
+            id="referenceNumber"
+            type="text" 
+            formControlName="referenceNumber" 
+            placeholder="Enter reference number (optional)" 
+            maxlength="100"
+            [class.error]="isFieldInvalid('referenceNumber')"
+            class="modern-input">
+          <div class="input-hint">Maximum 100 characters</div>
+          <div *ngIf="isFieldInvalid('referenceNumber')" class="input-error">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            {{ getErrorMessage('referenceNumber') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="description" class="input-label">Description</label>
+        <textarea 
+          id="description"
+          formControlName="description" 
+          rows="3" 
+          placeholder="Enter description (optional)"
+          maxlength="5000"
+          class="modern-textarea"></textarea>
+        <div class="input-hint">Maximum 5000 characters</div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button 
+      type="button"
+      (click)="onCancel()" 
+      [disabled]="isSubmitting"
+      class="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+      Cancel
+    </button>
+    <button 
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="isSubmitting || transferForm.invalid"
+      class="ml-3 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold disabled:cursor-not-allowed">
+      <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span *ngIf="!isSubmitting">Create Transfer</span>
+      <span *ngIf="isSubmitting">Creating...</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

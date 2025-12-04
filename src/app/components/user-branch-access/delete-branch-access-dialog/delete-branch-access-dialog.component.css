@@ -1,0 +1,54 @@
+/* Modern Tailwind CSS styling for Delete Branch Access Dialog Component */
+
+/* Dialog Container */
+::ng-deep .mat-mdc-dialog-container {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Content Area */
+.delete-dialog-container {
+  min-width: 400px;
+}
+
+.branch-access-details {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.warning-text {
+  color: #ef4444;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+/* Button Enhancements */
+::ng-deep .mat-mdc-button.mat-warn {
+  color: #ef4444 !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .mat-mdc-button.mat-warn:hover:not([disabled]) {
+  background-color: #fee2e2 !important;
+  transform: translateY(-1px);
+}
+
+::ng-deep .mat-mdc-button {
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .mat-mdc-button:hover:not([disabled]) {
+  background-color: #f3f4f6 !important;
+  transform: translateY(-1px);
+}
+
+/* Dialog Actions */
+::ng-deep .mat-mdc-dialog-actions {
+  background: #f9fafb;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+

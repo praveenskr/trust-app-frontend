@@ -16,6 +16,8 @@ import { VendorComponent } from './components/vendor/vendor.component';
 import { PaymentModeComponent } from './components/payment-mode/payment-mode.component';
 import { SerialNumberConfigComponent } from './components/serial-number-config/serial-number-config.component';
 import { DonationComponent } from './components/donation/donation.component';
+import { UserBranchAccessComponent } from './components/user-branch-access/user-branch-access.component';
+import { InterBranchTransferComponent } from './components/inter-branch-transfer/inter-branch-transfer.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -91,6 +93,14 @@ export const routes: Routes = [
           {
             path: 'branch',
             component: BranchComponent
+          },
+          {
+            path: 'user-branch-access',
+            component: UserBranchAccessComponent
+          },
+          {
+            path: 'inter-branch-transfer',
+            component: InterBranchTransferComponent
           }
         ]
       },
